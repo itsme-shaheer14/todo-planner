@@ -1,163 +1,163 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Todo ✦ Your Little Planner</title>
+<title>Heisenberg's List | Breaking Bad Todo Planner</title>
 <style>
-:root{--bg:#f7f3ff;--card:#fff;--ink:#30264e;--muted:#9890ad;--purple:#9870eb;--line:#eee7f8;--soft:#f2eaff}
+:root{--bg:#101510;--panel:#192119;--panel2:#222d22;--ink:#edf1e7;--muted:#a0ad9b;--green:#a4c639;--yellow:#e5bd55;--line:#354532}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font:14px Arial,sans-serif;color:var(--ink)}
+html{color-scheme:dark}
+body{margin:0;background:radial-gradient(ellipse at top left,#1b281a,#101510 55%);font:14px Arial,sans-serif;color:var(--ink)}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .app{min-height:100vh;display:grid;grid-template-columns:195px minmax(0,1fr)}
-aside{padding:23px 16px;background:#f0e6ff;border-right:1px solid #e8dcfa}
-.logo{text-align:center;font-family:Georgia,serif;font-size:29px;font-style:italic;color:#7955ae;margin:3px 0 8px}
-.tagline{text-align:center;color:#9984b9;font-size:11px;margin-bottom:28px}
-.nav{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:transparent;color:#635579;padding:12px 10px;border-radius:12px;margin:3px 0;text-align:left}
-.nav.active{background:linear-gradient(100deg,#a27aef,#8b65df);color:white;box-shadow:0 5px 12px #9972e544}
-.count{border-radius:50%;background:#ffffff65;min-width:20px;height:20px;display:grid;place-items:center;font-size:11px}
-.sidehead{border-top:1px solid #e2d5f3;margin-top:19px;padding-top:18px;font-weight:bold;font-size:12px;display:flex;justify-content:space-between}
-.cat{padding:10px 4px;color:#6f6383;font-size:12px;display:flex;gap:9px;align-items:center}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#ad83ed}
-.sidefoot{margin-top:40px;background:#e7d6ff;padding:18px;border-radius:15px;color:#9272c5;font-size:12px}
+aside{padding:23px 16px;background:#131b14;border-right:1px solid var(--line)}
+.logo{text-align:center;font-family:Georgia,serif;font-size:25px;font-weight:bold;letter-spacing:1px;color:var(--green);margin:3px 0 8px}
+.tagline{text-align:center;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px}
+.nav{display:flex;align-items:center;justify-content:space-between;width:100%;border:1px solid transparent;background:transparent;color:#c4cdbd;padding:12px 10px;border-radius:9px;margin:3px 0;text-align:left}
+.nav.active{background:linear-gradient(100deg,#354627,#263722);color:var(--green);border-color:#50633a}
+.count{border-radius:5px;background:#354532;color:#d8e6c5;min-width:20px;height:20px;display:grid;place-items:center;font-size:11px}
+.sidehead{border-top:1px solid var(--line);margin-top:19px;padding-top:18px;font-weight:bold;font-size:11px;letter-spacing:1px;display:flex;justify-content:space-between;color:var(--yellow)}
+.cat{padding:10px 4px;color:#b6c0af;font-size:12px;display:flex;gap:9px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--green)}
+.sidefoot{margin-top:40px;background:#202b20;border:1px solid var(--line);padding:18px;border-radius:10px;color:var(--green);font-size:12px}
 main{min-width:0;padding:18px}
-.top{display:flex;gap:12px;align-items:center;background:#fff9;border:1px solid #fff;border-radius:15px;padding:10px 12px}
-.search{flex:1;min-width:0;border:0;background:#f3edfc;padding:12px;border-radius:10px;outline-color:#a889ed}
-.iconbtn{border:0;background:#f3eaff;color:#8c6bc5;border-radius:10px;padding:11px}
-.datepill{background:#f4edff;border-radius:12px;padding:10px;font-size:11px;white-space:nowrap}
+.top{display:flex;gap:12px;align-items:center;background:#182018;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.search{flex:1;min-width:0;border:1px solid var(--line);background:#222d22;color:var(--ink);padding:12px;border-radius:8px}
+.iconbtn{border:1px solid var(--line);background:#293627;color:var(--green);border-radius:8px;padding:11px}
+.datepill{background:#222d22;border:1px solid var(--line);color:var(--yellow);border-radius:9px;padding:10px;font-size:11px;white-space:nowrap}
 .columns{display:grid;grid-template-columns:minmax(0,1fr) 195px;gap:17px;margin-top:20px}
-.eyebrow{font-size:9px;letter-spacing:2px;color:#9a76d7;font-weight:bold}
-h1{font-size:29px;margin:9px 0}
-.sub{font-size:12px;color:#968aa9}
-.banner{margin:19px 0 14px;border-radius:14px;background:linear-gradient(105deg,#e5d5ff,#f8dff3);min-height:76px;padding:17px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.clouds{font-size:17px;color:white;letter-spacing:2px}
-.bannertext{text-align:right;font-family:Georgia,serif;font-style:italic;font-size:21px;color:#8c6cb1}
-.bannertext small{display:block;font:9px Arial;color:#a28bb8;margin-top:7px}
-.flask{font-size:18px}
+.eyebrow{font-size:9px;letter-spacing:2px;color:var(--yellow);font-weight:bold}
+h1{font-size:29px;margin:9px 0;color:var(--green);letter-spacing:.5px;text-transform:uppercase}
+.sub{font-size:12px;color:var(--muted)}
+.banner{margin:19px 0 14px;border-radius:10px;background:linear-gradient(110deg,#1b2819,#303c20,#1b2418);border:1px solid #4a5d35;min-height:82px;padding:17px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.clouds{font-size:17px;color:var(--yellow);letter-spacing:2px}
+.bannertext{text-align:right;font-family:Georgia,serif;font-weight:bold;letter-spacing:2px;font-size:21px;color:var(--green)}
+.bannertext small{display:block;font:9px Arial,sans-serif;color:#c4cda9;letter-spacing:1px;margin-top:7px}
+.flask{font-size:18px;color:var(--yellow)}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0}
-.card{background:var(--card);border:1px solid #eee8f6;border-radius:15px;padding:14px;box-shadow:0 6px 20px #6c4b9710;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0;color:var(--ink)}
 .stat{display:flex;gap:9px;align-items:center}
-.staticon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#eee3ff;color:#9164dc}
-.statlabel{font-size:9px;color:#a39ab2}
-.statnum{font-weight:bold;font-size:17px;margin-top:3px}
+.staticon{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:#303f27;color:var(--green)}
+.statlabel{font-size:9px;color:var(--muted)}
+.statnum{font-weight:bold;font-size:17px;margin-top:3px;color:var(--yellow)}
 .form{display:grid;grid-template-columns:minmax(0,1fr) 1fr 95px 120px;gap:7px}
-.field{width:100%;min-width:0;padding:10px;border:1px solid #eee6f7;background:#fcfaff;border-radius:9px;color:#66577e}
+.field{width:100%;min-width:0;padding:10px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;color:var(--ink)}
 .form .taskinput{grid-column:1/-1}
-.add{grid-column:1/-1;border:0;border-radius:9px;padding:10px;color:white;background:linear-gradient(90deg,#a176ec,#9b80e9);font-weight:bold}
+.add{grid-column:1/-1;border:1px solid #b5d75b;border-radius:8px;padding:11px;color:#11170e;background:linear-gradient(90deg,#a4c639,#c4d96c);font-weight:bold;text-transform:uppercase;letter-spacing:1px}
 .section{margin-top:14px}
 .sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
-h2{font-size:14px;margin:0 0 12px}
-.sort{border:1px solid var(--line);background:#fcfaff;color:#78698e;padding:8px;border-radius:9px;font-size:11px}
-.task{display:flex;align-items:center;gap:9px;background:#fcfaff;border:1px solid #f0eaf8;border-radius:11px;padding:12px;margin-top:8px;flex-wrap:wrap}
-.task input{accent-color:#9870eb}
+h2{font-size:13px;margin:0 0 12px;color:var(--green);letter-spacing:.6px;text-transform:uppercase}
+.sort{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px;border-radius:8px;font-size:11px}
+.task{display:flex;align-items:center;gap:9px;background:#202a20;border:1px solid #354532;border-radius:9px;padding:12px;margin-top:8px;flex-wrap:wrap}
+.task input{accent-color:var(--green)}
 .taskname{flex:1;min-width:70px;overflow-wrap:anywhere}
-.task.done .taskname{text-decoration:line-through;color:#aaa0b9}
-.chip{font-size:9px;background:#eee3ff;color:#8667b6;border-radius:6px;padding:4px 6px}
-.priority{background:#fff0cf;color:#b38b48}
-.action{border:0;background:transparent;color:#a27bce;padding:3px}
-.empty{color:#a69ab7;text-align:center;padding:22px;font-size:12px}
+.task.done .taskname{text-decoration:line-through;color:#879180}
+.chip{font-size:9px;background:#303f27;color:#c7dc8b;border:1px solid #455a34;border-radius:5px;padding:4px 6px}
+.priority{background:#40371f;color:var(--yellow);border-color:#65552a}
+.action{border:0;background:transparent;color:var(--green);padding:3px}
+.empty{color:var(--muted);text-align:center;padding:22px;font-size:12px}
 .right{display:flex;flex-direction:column;gap:13px}
-.calendarhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px}
-.calendarhead button{border:0;background:#f1e6ff;color:#8c6ac8;border-radius:50%;width:24px;height:24px}
+.calendarhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:var(--yellow)}
+.calendarhead button{border:1px solid var(--line);background:#293627;color:var(--green);border-radius:50%;width:24px;height:24px}
 .calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center;font-size:10px}
-.calendar button{border:0;background:transparent;color:#7c708f;border-radius:50%;aspect-ratio:1;padding:0}
-.calendar button.today,.calendar button.selected{background:#9870eb;color:white}
-.weekday{color:#aa9eb9;padding:5px 0}
-.small{font-size:10px;color:#a69bb5;line-height:1.6}
+.calendar button{border:0;background:transparent;color:#c0c9b8;border-radius:50%;aspect-ratio:1;padding:0}
+.calendar button.today,.calendar button.selected{background:var(--green);color:#101510;font-weight:bold}
+.weekday{color:var(--yellow);padding:5px 0}
+.small{font-size:10px;color:var(--muted);line-height:1.6}
 textarea{resize:vertical;min-height:75px}
-.notesave{border:0;background:#f0e6ff;color:#8865bd;border-radius:8px;padding:7px;font-size:11px}
-body.dark{--bg:#191523;--card:#272032;--ink:#f2eafa;--muted:#b5a8c7;--line:#40344f;--soft:#332842}
-body.dark aside{background:#21192d;border-color:#40344f}
-body.dark .top,body.dark .card{border-color:#40344f}
-body.dark .field,body.dark .search,body.dark .task,body.dark .sort{background:#30263b;color:#f2eafa;border-color:#443650}
-body.dark .banner{background:linear-gradient(105deg,#39294f,#493044)}
-footer{text-align:center;color:#a99aba;font-size:10px;margin:20px 0}
+.notesave{border:1px solid var(--line);background:#293627;color:var(--green);border-radius:8px;padding:7px;font-size:11px}
+body.dark{--bg:#0b100b;--panel:#141c14;--panel2:#1c261c;--ink:#f2f5ec;--muted:#a8b39f;--line:#2c3b2b}
+body.dark aside{background:#0f160f}
+footer{text-align:center;color:#84917c;font-size:10px;margin:20px 0;letter-spacing:.5px}
+.right>.card:last-child{background:linear-gradient(120deg,#202c1d,#30391d);border-color:#4a5a32}
+.right>.card:last-child>div:nth-child(2){color:var(--green)!important}
 @media(min-width:1400px){main{padding:25px}.columns{grid-template-columns:minmax(0,1fr) 235px;gap:20px}}
 @media(max-width:1000px){.app{grid-template-columns:155px minmax(0,1fr)}.columns{grid-template-columns:minmax(0,1fr)}.right{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.form{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.app{grid-template-columns:1fr}aside{padding:12px}.logo{font-size:23px}.tagline{margin-bottom:10px}.navs{display:flex;overflow:auto}.nav{white-space:nowrap;width:auto;gap:8px;margin-right:5px}.sidehead,.categories,.sidefoot{display:none}main{padding:11px}.columns{margin-top:15px}.right{grid-template-columns:1fr}.datepill{font-size:9px;padding:7px}.bannertext{font-size:17px}.form{grid-template-columns:1fr 1fr}.stats{gap:7px}.card{padding:11px}h1{font-size:25px}}
+@media(max-width:600px){.app{grid-template-columns:1fr}aside{padding:12px}.logo{font-size:23px}.tagline{margin-bottom:10px}.navs{display:flex;overflow:auto}.nav{white-space:nowrap;width:auto;gap:8px;margin-right:5px}.sidehead,.categories,.sidefoot{display:none}main{padding:11px}.columns{margin-top:15px}.right{grid-template-columns:1fr}.datepill{font-size:9px;padding:7px}.bannertext{font-size:15px}.form{grid-template-columns:1fr 1fr}.stats{gap:7px}.card{padding:11px}h1{font-size:24px}.top{gap:7px}}
 </style>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="app">
 <aside>
-  <div class="logo">Todo ✦</div>
-  <div class="tagline">Plan · Focus · Achieve</div>
-  <div class="navs">
-    <button class="nav active" data-filter="all">♙ All Tasks <span class="count" id="allCount">0</span></button>
-    <button class="nav" data-filter="today">▦ Today <span class="count" id="todayCount">0</span></button>
-    <button class="nav" data-filter="important">☆ Important <span class="count" id="importantCount">0</span></button>
-    <button class="nav" data-filter="completed">⊙ Completed <span class="count" id="completedSide">0</span></button>
-  </div>
-  <div class="sidehead">Categories <span>✚</span></div>
-  <div class="categories">
-    <div class="cat"><i class="dot"></i>Study</div>
-    <div class="cat"><i class="dot" style="background:#ffb46f"></i>Personal</div>
-    <div class="cat"><i class="dot" style="background:#7eacff"></i>College</div>
-    <div class="cat"><i class="dot" style="background:#55c995"></i>Health</div>
-    <div class="cat"><i class="dot" style="background:#e18ad5"></i>Others</div>
-  </div>
-  <div class="sidefoot">✿<br><br>Little steps every day lead to big results.</div>
+<div class="logo">HEISENBERG ☣</div>
+<div class="tagline">Chemistry · Precision · Control</div>
+<div class="navs">
+<button class="nav active" data-filter="all">♙ All Tasks <span class="count" id="allCount">0</span></button>
+<button class="nav" data-filter="today">▦ Today <span class="count" id="todayCount">0</span></button>
+<button class="nav" data-filter="important">☆ Important <span class="count" id="importantCount">0</span></button>
+<button class="nav" data-filter="completed">⊙ Completed <span class="count" id="completedSide">0</span></button>
+</div>
+<div class="sidehead">Categories <span>✚</span></div>
+<div class="categories">
+<div class="cat"><i class="dot"></i>Study</div>
+<div class="cat"><i class="dot" style="background:#e5bd55"></i>Personal</div>
+<div class="cat"><i class="dot"></i>College</div>
+<div class="cat"><i class="dot" style="background:#789b47"></i>Health</div>
+<div class="cat"><i class="dot" style="background:#a0ad9b"></i>Others</div>
+</div>
+<div class="sidefoot">☣<br><br>No more half-measures. Execute the plan.</div>
 </aside>
 <main>
-  <div class="top">
-    <input class="search" id="search" placeholder="⌕  Search tasks...">
-    <button class="iconbtn" id="theme" title="Toggle dark mode">☾</button>
-    <div class="datepill">▦ &nbsp;<span id="dateNow"></span><br><span id="timeNow" style="padding-left:19px"></span></div>
-  </div>
-  <div class="columns">
-    <div>
-      <div class="eyebrow">YOUR LITTLE PRODUCTIVITY SPACE</div>
-      <h1>My To-Do List ✧</h1>
-      <div class="sub">Stay organized, stay consistent.</div>
-      <section class="banner">
-        <div class="clouds">☁ ☁ ☁</div>
-        <div class="bannertext">SAY MY NAME <span class="flask">⚗</span><small>one little step at a time</small></div>
-      </section>
-      <div class="stats">
-        <div class="card stat"><div class="staticon">✓</div><div><div class="statlabel">Total Tasks</div><div class="statnum" id="total">0</div></div></div>
-        <div class="card stat"><div class="staticon" style="background:#ddf5e8;color:#52b987">✓</div><div><div class="statlabel">Completed</div><div class="statnum" id="done">0</div></div></div>
-        <div class="card stat"><div class="staticon" style="background:#ffe4f0;color:#df78ab">◷</div><div><div class="statlabel">Pending</div><div class="statnum" id="pending">0</div></div></div>
-        <div class="card stat"><div class="staticon">◉</div><div><div class="statlabel">Progress</div><div class="statnum" id="progress">0%</div></div></div>
-      </div>
-      <section class="card">
-        <form class="form" id="form">
-          <input class="field taskinput" id="taskInput" placeholder="◦  What do you want to do?" required maxlength="160">
-          <select class="field" id="category"><option>Study</option><option>Personal</option><option>College</option><option>Health</option><option>Others</option></select>
-          <select class="field" id="priority"><option>Medium</option><option>High</option><option>Low</option></select>
-          <input class="field" id="due" type="date" aria-label="Due date">
-          <button class="add" type="submit">➤ Add Task</button>
-        </form>
-      </section>
-      <section class="card section">
-        <div class="sectionhead"><h2 id="listTitle">All Tasks</h2><select class="sort" id="sort"><option value="new">Newest</option><option value="old">Oldest</option><option value="priority">Priority</option></select></div>
-        <div id="tasks"></div>
-      </section>
-    </div>
-    <div class="right">
-      <section class="card">
-        <div class="calendarhead"><strong id="month"></strong><div><button id="prev">‹</button> <button id="next">›</button></div></div>
-        <div class="calendar" id="calendar"></div>
-        <div class="small" id="picked" style="text-align:center;margin-top:8px">◦ select a date to plan your day</div>
-      </section>
-      <section class="card">
-        <div class="sectionhead"><h2>My Day ✳</h2><span class="small" id="dayCount">0 tasks</span></div>
-        <div class="small" id="myday">A fresh day awaits ♡</div>
-      </section>
-      <section class="card">
-        <div class="sectionhead"><h2>Little Notes</h2><button class="notesave" id="saveNote">✚</button></div>
-        <textarea class="field" id="notes" placeholder="Write a little reminder..." style="width:100%;margin:5px 0"></textarea>
-        <div class="small">your thoughts, saved here ♡</div>
-      </section>
-      <section class="card" style="background:linear-gradient(120deg,#e4d3ff,#f9dff1)">
-        <div style="color:#9877c5;font-size:20px">☾</div>
-        <div style="font:italic 20px Georgia;color:#8d6eb2;margin-top:12px">Good things take time.</div>
-        <div class="small" style="margin-top:8px">Breathe. Focus. Begin again.</div>
-      </section>
-    </div>
-  </div>
-  <footer>Small steps every day lead to big results ✦</footer>
+<div class="top">
+<input class="search" id="search" placeholder="⌕ Search operations...">
+<button class="iconbtn" id="theme" title="Toggle dark mode">☾</button>
+<div class="datepill">▦ &nbsp;<span id="dateNow"></span><br><span id="timeNow" style="padding-left:19px"></span></div>
+</div>
+<div class="columns">
+<div>
+<div class="eyebrow">DAILY OPERATIONS • CLASSIFIED</div>
+<h1>Heisenberg's List</h1>
+<div class="sub">No more half-measures. Execute the plan.</div>
+<section class="banner">
+<div class="clouds">☣ &nbsp; ⚗ &nbsp; ☣</div>
+<div class="bannertext">SAY MY NAME <span class="flask">⚗</span><small>Operation: daily planning</small></div>
+</section>
+<div class="stats">
+<div class="card stat"><div class="staticon">✓</div><div><div class="statlabel">Total Tasks</div><div class="statnum" id="total">0</div></div></div>
+<div class="card stat"><div class="staticon">✓</div><div><div class="statlabel">Completed</div><div class="statnum" id="done">0</div></div></div>
+<div class="card stat"><div class="staticon">◷</div><div><div class="statlabel">Pending</div><div class="statnum" id="pending">0</div></div></div>
+<div class="card stat"><div class="staticon">◉</div><div><div class="statlabel">Progress</div><div class="statnum" id="progress">0%</div></div></div>
+</div>
+<section class="card">
+<form class="form" id="form">
+<input class="field taskinput" id="taskInput" placeholder="Enter your next operation..." required maxlength="160">
+<select class="field" id="category"><option>Study</option><option>Personal</option><option>College</option><option>Health</option><option>Others</option></select>
+<select class="field" id="priority"><option>Medium</option><option>High</option><option>Low</option></select>
+<input class="field" id="due" type="date" aria-label="Due date">
+<button class="add" type="submit">＋ Add Operation</button>
+</form>
+</section>
+<section class="card section">
+<div class="sectionhead"><h2 id="listTitle">All Tasks</h2><select class="sort" id="sort"><option value="new">Newest</option><option value="old">Oldest</option><option value="priority">Priority</option></select></div>
+<div id="tasks"></div>
+</section>
+</div>
+<div class="right">
+<section class="card">
+<div class="calendarhead"><strong id="month"></strong><div><button id="prev">‹</button> <button id="next">›</button></div></div>
+<div class="calendar" id="calendar"></div>
+<div class="small" id="picked" style="text-align:center;margin-top:8px">◦ select a date to plan your day</div>
+</section>
+<section class="card">
+<div class="sectionhead"><h2>Today's Operation</h2><span class="small" id="dayCount">0 tasks</span></div>
+<div class="small" id="myday">No more half-measures.</div>
+</section>
+<section class="card">
+<div class="sectionhead"><h2>Field Notes</h2><button class="notesave" id="saveNote">✚</button></div>
+<textarea class="field" id="notes" placeholder="Record your notes..." style="width:100%;margin:5px 0"></textarea>
+<div class="small">Confidential notes • saved locally</div>
+</section>
+<section class="card">
+<div style="color:var(--yellow);font-size:20px">☣</div>
+<div style="font:italic 20px Georgia;margin-top:12px">Stay out of my territory.</div>
+<div class="small" style="margin-top:8px">Precision. Patience. Execution.</div>
+</section>
+</div>
+</div>
+<footer>BREAKING BAD INSPIRED • DAILY OPERATIONS</footer>
 </main>
 </div>
 <script>
@@ -168,46 +168,46 @@ let filter='all',view=new Date(),selected=new Date();
 const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function save(){localStorage.setItem('plannerTasks',JSON.stringify(tasks));render()}
 function render(){
- const completed=tasks.filter(t=>t.done).length;
- $('total').textContent=tasks.length;$('done').textContent=completed;$('pending').textContent=tasks.length-completed;$('progress').textContent=(tasks.length?Math.round(completed/tasks.length*100):0)+'%';
- $('allCount').textContent=tasks.length;$('todayCount').textContent=tasks.filter(t=>t.due===key(new Date())&&!t.done).length;$('importantCount').textContent=tasks.filter(t=>t.important).length;$('completedSide').textContent=completed;
- $('dayCount').textContent=tasks.filter(t=>t.due===key(new Date())&&!t.done).length+' tasks';
- $('myday').textContent=tasks.some(t=>t.due===key(new Date())&&!t.done)?'You have tasks to finish today ♡':'A fresh day awaits ♡';
- $('listTitle').textContent=({all:'All Tasks',today:'Today',important:'Important',completed:'Completed'})[filter];
- document.querySelectorAll('.nav[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
- let arr=tasks.filter(t=>(filter==='all'||(filter==='today'&&t.due===key(new Date()))||(filter==='important'&&t.important)||(filter==='completed'&&t.done))&&t.text.toLowerCase().includes($('search').value.toLowerCase()));
- if($('sort').value==='old')arr.sort((a,b)=>a.id-b.id);
- if($('sort').value==='new')arr.sort((a,b)=>b.id-a.id);
- if($('sort').value==='priority')arr.sort((a,b)=>({High:0,Medium:1,Low:2}[a.priority]-({High:0,Medium:1,Low:2}[b.priority])));
- $('tasks').replaceChildren();
- if(!arr.length){let e=document.createElement('div');e.className='empty';e.textContent='No tasks yet. Add your first task!';$('tasks').append(e)}
- arr.forEach(t=>{
-  let row=document.createElement('div');row.className='task'+(t.done?' done':'');
-  let c=document.createElement('input');c.type='checkbox';c.checked=t.done;c.setAttribute('aria-label','Mark complete');c.onchange=()=>{t.done=c.checked;save()};
-  let n=document.createElement('span');n.className='taskname';n.textContent=t.text;
-  let cat=document.createElement('span');cat.className='chip';cat.textContent=t.category;
-  let p=document.createElement('span');p.className='chip priority';p.textContent=t.priority;
-  let star=document.createElement('button');star.className='action';star.textContent=t.important?'★':'☆';star.title='Important';star.onclick=()=>{t.important=!t.important;save()};
-  let edit=document.createElement('button');edit.className='action';edit.textContent='✎';edit.title='Edit';edit.onclick=()=>{let x=prompt('Edit task',t.text);if(x&&x.trim()){t.text=x.trim();save()}};
-  let del=document.createElement('button');del.className='action';del.textContent='♧';del.title='Delete';del.onclick=()=>{tasks=tasks.filter(x=>x.id!==t.id);save()};
-  row.append(c,n,cat,p,star,edit,del);
-  if(t.due){let d=document.createElement('span');d.className='small';d.textContent=t.due;row.append(d)}
-  $('tasks').append(row);
- });
- drawCalendar();
+const completed=tasks.filter(t=>t.done).length;
+$('total').textContent=tasks.length;$('done').textContent=completed;$('pending').textContent=tasks.length-completed;$('progress').textContent=(tasks.length?Math.round(completed/tasks.length*100):0)+'%';
+$('allCount').textContent=tasks.length;$('todayCount').textContent=tasks.filter(t=>t.due===key(new Date())&&!t.done).length;$('importantCount').textContent=tasks.filter(t=>t.important).length;$('completedSide').textContent=completed;
+$('dayCount').textContent=tasks.filter(t=>t.due===key(new Date())&&!t.done).length+' tasks';
+$('myday').textContent=tasks.some(t=>t.due===key(new Date())&&!t.done)?'You have operations to complete today.':'No more half-measures.';
+$('listTitle').textContent=({all:'All Tasks',today:'Today',important:'Important',completed:'Completed'})[filter];
+document.querySelectorAll('.nav[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+let arr=tasks.filter(t=>(filter==='all'||(filter==='today'&&t.due===key(new Date()))||(filter==='important'&&t.important)||(filter==='completed'&&t.done))&&t.text.toLowerCase().includes($('search').value.toLowerCase()));
+if($('sort').value==='old')arr.sort((a,b)=>a.id-b.id);
+if($('sort').value==='new')arr.sort((a,b)=>b.id-a.id);
+if($('sort').value==='priority')arr.sort((a,b)=>({High:0,Medium:1,Low:2}[a.priority]-({High:0,Medium:1,Low:2}[b.priority])));
+$('tasks').replaceChildren();
+if(!arr.length){let e=document.createElement('div');e.className='empty';e.textContent='No operations yet. Add your first operation.';$('tasks').append(e)}
+arr.forEach(t=>{
+let row=document.createElement('div');row.className='task'+(t.done?' done':'');
+let c=document.createElement('input');c.type='checkbox';c.checked=t.done;c.setAttribute('aria-label','Mark complete');c.onchange=()=>{t.done=c.checked;save()};
+let n=document.createElement('span');n.className='taskname';n.textContent=t.text;
+let cat=document.createElement('span');cat.className='chip';cat.textContent=t.category;
+let p=document.createElement('span');p.className='chip priority';p.textContent=t.priority;
+let star=document.createElement('button');star.className='action';star.textContent=t.important?'★':'☆';star.title='Important';star.onclick=()=>{t.important=!t.important;save()};
+let edit=document.createElement('button');edit.className='action';edit.textContent='✎';edit.title='Edit';edit.onclick=()=>{let x=prompt('Edit task',t.text);if(x&&x.trim()){t.text=x.trim();save()}};
+let del=document.createElement('button');del.className='action';del.textContent='♧';del.title='Delete';del.onclick=()=>{tasks=tasks.filter(x=>x.id!==t.id);save()};
+row.append(c,n,cat,p,star,edit,del);
+if(t.due){let d=document.createElement('span');d.className='small';d.textContent=t.due;row.append(d)}
+$('tasks').append(row);
+});
+drawCalendar();
 }
 function drawCalendar(){
- const y=view.getFullYear(),m=view.getMonth();
- $('month').textContent=view.toLocaleDateString('en-US',{month:'long',year:'numeric'});
- $('calendar').replaceChildren();
- ['S','M','T','W','T','F','S'].forEach(x=>{let s=document.createElement('span');s.className='weekday';s.textContent=x;$('calendar').append(s)});
- for(let i=0;i<new Date(y,m,1).getDay();i++)$('calendar').append(document.createElement('span'));
- for(let d=1;d<=new Date(y,m+1,0).getDate();d++){
-  let date=new Date(y,m,d),b=document.createElement('button');b.textContent=d;
-  if(key(date)===key(new Date()))b.classList.add('today');
-  if(key(date)===key(selected))b.classList.add('selected');
-  b.onclick=()=>{selected=date;$('picked').textContent='Selected: '+date.toLocaleDateString();drawCalendar()};$('calendar').append(b);
- }
+const y=view.getFullYear(),m=view.getMonth();
+$('month').textContent=view.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+$('calendar').replaceChildren();
+['S','M','T','W','T','F','S'].forEach(x=>{let s=document.createElement('span');s.className='weekday';s.textContent=x;$('calendar').append(s)});
+for(let i=0;i<new Date(y,m,1).getDay();i++)$('calendar').append(document.createElement('span'));
+for(let d=1;d<=new Date(y,m+1,0).getDate();d++){
+let date=new Date(y,m,d),b=document.createElement('button');b.textContent=d;
+if(key(date)===key(new Date()))b.classList.add('today');
+if(key(date)===key(selected))b.classList.add('selected');
+b.onclick=()=>{selected=date;$('picked').textContent='Selected: '+date.toLocaleDateString();drawCalendar()};$('calendar').append(b);
+}
 }
 document.querySelectorAll('.nav[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render()});
 $('form').onsubmit=e=>{e.preventDefault();let text=$('taskInput').value.trim();if(!text)return;tasks.push({id:Date.now(),text,category:$('category').value,priority:$('priority').value,due:$('due').value,done:false,important:false});$('taskInput').value='';save()};
@@ -215,7 +215,7 @@ $('search').oninput=render;$('sort').onchange=render;
 $('theme').onclick=()=>document.body.classList.toggle('dark');
 $('prev').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);drawCalendar()};
 $('next').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);drawCalendar()};
-$('saveNote').onclick=()=>{localStorage.setItem('plannerNotes',$('notes').value);$('saveNote').textContent='✓';};
+$('saveNote').onclick=()=>{localStorage.setItem('plannerNotes',$('notes').value);$('saveNote').textContent='✓'};
 $('notes').value=localStorage.getItem('plannerNotes')||'';
 function clock(){$('dateNow').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});$('timeNow').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}
 clock();setInterval(clock,30000);render();
