@@ -3,23 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEISENBERG // OPERATIONS &amp; TASK PLANNER</title>
+    <title>HEISENBERG // CLASSIFIED OPERATIONS DOSSIER</title>
     <style>
         :root {
-            --bg-deep: #070c08;
-            --bg-panel: #0d1710;
-            --bg-surface: #122016;
-            --bg-hover: #192c1e;
-            --border-dim: #1e3624;
-            --border-glow: #2d5537;
-            --toxic-lime: #a3e635;
-            --toxic-glow: #b4f000;
-            --crystal-blue: #38bdf8;
-            --crystal-glow: #00f2fe;
-            --hazard-amber: #f59e0b;
-            --hazard-crimson: #f43f5e;
-            --text-muted: #7d9c82;
-            --text-light: #e2f1e4;
+            --bg-void: #050805;
+            --panel-glass: rgba(11, 20, 14, 0.92);
+            --panel-border: rgba(45, 85, 55, 0.45);
+            --toxic-green: #a3e635;
+            --crystal-sky: #38bdf8;
+            --amber-alert: #f59e0b;
+            --rose-danger: #f43f5e;
+            --slate-text: #82a388;
+            --bright-text: #f0fdf4;
         }
 
         * {
@@ -29,19 +24,16 @@
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-light);
+            background-color: var(--bg-void);
+            color: var(--bright-text);
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px 16px;
+            padding: 24px 20px 40px;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Ambient Laboratory Background Grid */
+        /* Ambient Laboratory Grid */
         body::before {
             content: '';
             position: fixed;
@@ -50,15 +42,15 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(45, 85, 55, 0.07) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(45, 85, 55, 0.07) 1px, transparent 1px);
+                linear-gradient(rgba(45, 85, 55, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(45, 85, 55, 0.08) 1px, transparent 1px);
             background-size: 32px 32px;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Mouse Particles Canvas */
-        #chemistry-canvas {
+        /* Molecular Lattice Canvas */
+        #molecule-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -68,263 +60,201 @@
             z-index: 9999;
         }
 
-        /* Main Container */
-        .app-container {
-            width: 100%;
-            max-width: 960px;
+        /* Main Split Layout */
+        .console-split-layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+            align-items: start;
             position: relative;
             z-index: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
-        /* Header Card */
-        .header-card {
-            background: linear-gradient(135deg, rgba(13, 23, 16, 0.95), rgba(7, 12, 8, 0.98));
-            border: 1px solid var(--border-glow);
+        @media (max-width: 900px) {
+            .console-split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Column: Synthesis Controller (Sticky) */
+        .left-controller {
+            background: var(--panel-glass);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .header-brand-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 14px;
+        }
+
+        .periodic-chips {
+            display: flex;
+            gap: 4px;
+        }
+
+        .p-chip {
+            width: 42px;
+            height: 44px;
+            background: #0d1a10;
+            border: 1px solid var(--panel-border);
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2px 4px;
+        }
+
+        .p-chip.br { border-top: 2px solid var(--toxic-green); }
+        .p-chip.ba { border-top: 2px solid var(--crystal-sky); }
+
+        .p-chip .atomic-num { font-size: 8px; font-family: 'Courier New', monospace; color: var(--amber-alert); }
+        .p-chip .symbol { font-size: 18px; font-family: 'Impact', sans-serif; text-align: center; line-height: 1; }
+        .p-chip.br .symbol { color: var(--toxic-green); }
+        .p-chip.ba .symbol { color: var(--crystal-sky); }
+
+        .brand-text h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 22px;
+            letter-spacing: 1px;
+            color: var(--toxic-green);
+            line-height: 1;
+        }
+
+        .brand-text p {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: var(--slate-text);
+            margin-top: 4px;
+        }
+
+        /* Purity HUD Box */
+        .purity-radial-box {
+            background: #09130c;
+            border: 1px solid var(--panel-border);
             border-radius: 6px;
-            padding: 20px 24px;
+            padding: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(163, 230, 53, 0.15);
         }
 
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        .purity-label {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--slate-text);
         }
 
-        .element-badge-group {
+        .purity-label strong {
+            display: block;
+            font-size: 20px;
+            color: var(--crystal-sky);
+            font-family: 'Impact', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .mini-stat-pills {
             display: flex;
             gap: 6px;
         }
 
-        .element-badge {
-            width: 54px;
-            height: 56px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-glow);
-            border-top: 2px solid var(--toxic-lime);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 4px 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .element-badge:hover {
-            transform: translateY(-2px);
-            border-color: var(--toxic-lime);
-            box-shadow: 0 0 14px rgba(163, 230, 53, 0.3);
-        }
-
-        .element-badge.blue {
-            border-top-color: var(--crystal-blue);
-        }
-
-        .element-badge.blue:hover {
-            box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
-        }
-
-        .element-num {
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            color: var(--hazard-amber);
-            line-height: 1;
-        }
-
-        .element-sym {
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-light);
-            line-height: 1;
+        .s-pill {
+            background: #112015;
+            border: 1px solid var(--panel-border);
+            border-radius: 3px;
+            padding: 4px 8px;
             text-align: center;
-            letter-spacing: -0.5px;
-        }
-
-        .element-badge.blue .element-sym {
-            color: var(--crystal-blue);
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
-        }
-
-        .element-badge:not(.blue) .element-sym {
-            color: var(--toxic-lime);
-            text-shadow: 0 0 8px rgba(163, 230, 53, 0.4);
-        }
-
-        .element-name {
-            font-size: 8px;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            text-align: center;
-            text-transform: uppercase;
-        }
-
-        .brand-meta h1 {
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-size: 26px;
-            letter-spacing: 1.5px;
-            color: var(--toxic-lime);
-            text-shadow: 0 0 12px rgba(163, 230, 53, 0.3);
-            line-height: 1.1;
-        }
-
-        .brand-meta p {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-meta p span {
-            color: var(--hazard-amber);
-        }
-
-        /* HUD Progress Panel */
-        .hud-stats {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-dim);
-            border-radius: 4px;
-            padding: 10px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 250px;
-        }
-
-        .hud-counters {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
-        .counter-item .c-label {
             font-family: 'Courier New', monospace;
             font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
+            min-width: 44px;
         }
+        .s-pill .n { font-weight: bold; font-size: 13px; color: var(--bright-text); }
+        .s-pill.act .n { color: var(--amber-alert); }
+        .s-pill.fin .n { color: var(--toxic-green); }
 
-        .counter-item .c-val {
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-size: 20px;
-            color: var(--text-light);
-            line-height: 1.2;
-        }
-
-        .counter-item.active .c-val { color: var(--hazard-amber); }
-        .counter-item.done .c-val { color: var(--toxic-lime); }
-        .counter-item.purity .c-val { color: var(--crystal-blue); text-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
-
-        .progress-track {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-deep);
-            border-radius: 3px;
-            overflow: hidden;
-            border: 1px solid var(--border-dim);
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--toxic-lime), var(--crystal-blue));
-            box-shadow: 0 0 8px rgba(163, 230, 53, 0.5);
-            transition: width 0.4s ease;
-        }
-
-        /* Quick-Add Dispatch Form */
-        .dispatch-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-dim);
-            border-radius: 6px;
-            padding: 16px 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-header-bar {
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            color: var(--hazard-amber);
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-header-bar span {
-            color: var(--text-muted);
-            font-weight: normal;
-        }
-
-        .task-form-grid {
-            display: grid;
-            grid-template-columns: 2.5fr 1fr 1fr 1fr auto;
-            gap: 10px;
-            align-items: flex-end;
-        }
-
-        @media (max-width: 820px) {
-            .task-form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .task-form-grid .full-span {
-                grid-column: span 2;
-            }
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .form-group label {
+        /* Form Inputs */
+        .form-label {
             font-family: 'Courier New', monospace;
             font-size: 10px;
-            color: var(--text-muted);
+            color: var(--slate-text);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* Custom Dark Laboratory Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #060b07;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #17321e;
+            border: 1px solid #285433;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--toxic-green);
+            box-shadow: 0 0 8px rgba(163, 230, 53, 0.6);
+        }
+
+        textarea {
+            width: 100%;
+            background: #070e08;
+            color: var(--bright-text);
+            border: 1px solid var(--panel-border);
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            outline: none;
+            resize: vertical;
+            transition: all 0.2s;
+            scrollbar-width: thin;
+            scrollbar-color: #17321e #060b07;
         }
 
         input[type="text"],
         input[type="date"],
-        select,
-        textarea {
-            background: var(--bg-surface);
-            color: var(--text-light);
-            border: 1px solid var(--border-dim);
+        select {
+            width: 100%;
+            background: #09140c;
+            color: var(--bright-text);
+            border: 1px solid var(--panel-border);
             border-radius: 4px;
             padding: 9px 12px;
             font-size: 13px;
-            font-family: inherit;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-        }
-
-        input[type="text"]::placeholder,
-        textarea::placeholder {
-            color: #4b6650;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
         input[type="text"]:focus,
         input[type="date"]:focus,
         select:focus,
         textarea:focus {
-            border-color: var(--toxic-lime);
+            border-color: var(--toxic-green);
             box-shadow: 0 0 10px rgba(163, 230, 53, 0.25);
-            background: #15271a;
+            background: #0e1e12;
         }
 
         input[type="date"]::-webkit-calendar-picker-indicator {
@@ -332,134 +262,135 @@
             cursor: pointer;
         }
 
-        .btn-dispatch {
-            background: linear-gradient(180deg, #1f3823, #152719);
-            color: var(--toxic-lime);
-            border: 1px solid var(--border-glow);
+        .btn-authorize {
+            width: 100%;
+            background: linear-gradient(180deg, #1b3821, #132717);
+            color: var(--toxic-green);
+            border: 1px solid var(--panel-border);
             border-radius: 4px;
-            padding: 9px 18px;
+            padding: 10px;
             font-family: 'Courier New', monospace;
             font-size: 12px;
             font-weight: bold;
-            letter-spacing: 0.8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
         }
 
-        .btn-dispatch:hover {
-            background: linear-gradient(180deg, #2b4f31, #1e3823);
-            border-color: var(--toxic-lime);
+        .btn-authorize:hover {
+            background: linear-gradient(180deg, #275230, #1b3821);
             color: #ffffff;
+            border-color: var(--toxic-green);
             box-shadow: 0 0 14px rgba(163, 230, 53, 0.35);
-            transform: translateY(-1px);
         }
 
-        .btn-dispatch:active {
-            transform: translateY(0);
-        }
-
-        /* Filter Tabs */
-        .filter-nav {
+        /* Right Column: Operations Feed */
+        .right-feed {
             display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 2px;
-            scrollbar-width: thin;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .filter-pill {
-            background: var(--bg-panel);
-            color: var(--text-muted);
-            border: 1px solid var(--border-dim);
-            border-radius: 4px;
-            padding: 6px 14px;
+        .feed-nav-bar {
+            background: var(--panel-glass);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-chip {
+            background: transparent;
+            color: var(--slate-text);
+            border: 1px solid transparent;
+            border-radius: 3px;
+            padding: 6px 12px;
             font-family: 'Courier New', monospace;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            transition: all 0.15s;
             white-space: nowrap;
         }
 
-        .filter-pill:hover {
-            color: var(--text-light);
-            border-color: var(--border-glow);
-            background: var(--bg-hover);
+        .nav-chip:hover {
+            color: var(--bright-text);
+            background: rgba(45, 85, 55, 0.2);
         }
 
-        .filter-pill.active {
-            background: #17301c;
-            color: var(--toxic-lime);
-            border-color: var(--toxic-lime);
-            box-shadow: 0 0 10px rgba(163, 230, 53, 0.2);
+        .nav-chip.active {
+            background: rgba(163, 230, 53, 0.12);
+            color: var(--toxic-green);
+            border-color: var(--toxic-green);
         }
 
-        .filter-count {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1px 6px;
-            border-radius: 10px;
-            font-size: 10px;
+        /* Feed List */
+        .operation-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        /* Tasks Ledger Table */
-        .ledger-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-dim);
+        .stream-item {
+            background: linear-gradient(135deg, rgba(14, 25, 18, 0.95) 0%, rgba(8, 15, 10, 0.98) 100%);
+            border: 1px solid var(--panel-border);
+            border-left: 3px solid var(--toxic-green);
             border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .ledger-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-        }
-
-        .ledger-table thead th {
-            background: #0f1c13;
-            color: var(--hazard-amber);
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            font-weight: bold;
-            letter-spacing: 0.8px;
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border-glow);
-            text-transform: uppercase;
-        }
-
-        .ledger-table tbody tr {
-            border-bottom: 1px solid rgba(30, 54, 36, 0.5);
-            transition: background 0.15s ease;
-        }
-
-        .ledger-table tbody tr:hover {
-            background: var(--bg-hover);
-        }
-
-        .ledger-table tbody tr.completed-row {
-            opacity: 0.6;
-        }
-
-        .ledger-table td {
-            padding: 12px 14px;
-            vertical-align: middle;
-        }
-
-        /* Custom Checkbox */
-        .checkbox-container {
-            display: inline-block;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
             position: relative;
+        }
+
+        .stream-item.sec-border-study { border-left-color: var(--crystal-sky); }
+        .stream-item.sec-border-college { border-left-color: var(--amber-alert); }
+        .stream-item.sec-border-personal { border-left-color: var(--toxic-green); }
+        .stream-item.sec-border-health { border-left-color: var(--rose-danger); }
+        .stream-item.sec-border-others { border-left-color: #10b981; }
+
+        .stream-item:hover {
+            transform: translateX(4px);
+            border-color: rgba(163, 230, 53, 0.45);
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6), 0 0 12px rgba(163, 230, 53, 0.15);
+        }
+
+        .stream-item.done {
+            opacity: 0.55;
+            background: linear-gradient(135deg, rgba(9, 16, 11, 0.75) 0%, rgba(6, 10, 7, 0.85) 100%);
+            border-left-color: #3b5340;
+        }
+
+        .stream-item.done .op-title {
+            text-decoration: line-through;
+            color: #55725a;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        /* High-Tech Custom Chemical Checkbox (Zero White Spots) */
+        .custom-chem-check {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
+            flex-shrink: 0;
             user-select: none;
         }
 
-        .checkbox-container input {
+        .custom-chem-check input {
             position: absolute;
             opacity: 0;
             cursor: pointer;
@@ -467,433 +398,524 @@
             width: 0;
         }
 
-        .checkmark {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 3px;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .checkbox-container:hover input ~ .checkmark {
-            border-color: var(--toxic-lime);
-            box-shadow: 0 0 6px rgba(163, 230, 53, 0.3);
-        }
-
-        .checkbox-container input:checked ~ .checkmark {
-            background: var(--toxic-lime);
-            border-color: var(--toxic-lime);
-        }
-
-        .checkbox-container input:checked ~ .checkmark::after {
-            content: '';
+        .chem-checkmark {
             position: absolute;
-            left: 5px;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            background: #08120a;
+            border: 1.5px solid #23482d;
+            border-radius: 4px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .custom-chem-check:hover .chem-checkmark {
+            border-color: var(--toxic-green);
+            box-shadow: 0 0 10px rgba(163, 230, 53, 0.35);
+        }
+
+        .custom-chem-check input:checked ~ .chem-checkmark {
+            background: var(--toxic-green);
+            border-color: var(--toxic-green);
+            box-shadow: 0 0 12px rgba(163, 230, 53, 0.55);
+        }
+
+        .chem-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
             top: 2px;
             width: 5px;
-            height: 9px;
-            border: solid #070c08;
-            border-width: 0 2px 2px 0;
+            height: 10px;
+            border: solid #050805;
+            border-width: 0 2.5px 2.5px 0;
             transform: rotate(45deg);
         }
 
-        /* Badges */
-        .category-badge {
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 3px;
-            display: inline-block;
-            letter-spacing: 0.5px;
+        .custom-chem-check input:checked ~ .chem-checkmark:after {
+            display: block;
         }
 
-        .cat-study { background: rgba(56, 189, 248, 0.12); color: var(--crystal-blue); border: 1px solid rgba(56, 189, 248, 0.3); }
-        .cat-college { background: rgba(245, 158, 11, 0.12); color: var(--hazard-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .cat-personal { background: rgba(163, 230, 53, 0.12); color: var(--toxic-lime); border: 1px solid rgba(163, 230, 53, 0.3); }
-        .cat-health { background: rgba(244, 63, 94, 0.12); color: var(--hazard-crimson); border: 1px solid rgba(244, 63, 94, 0.3); }
-        .cat-others { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .op-title {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--bright-text);
+            line-height: 1.35;
+        }
 
-        .priority-badge {
+        .op-meta-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
             font-family: 'Courier New', monospace;
             font-size: 10px;
+        }
+
+        .chip-sec {
             font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 2px;
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+        .sec-study { color: var(--crystal-sky); background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.25); }
+        .sec-college { color: var(--amber-alert); background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.25); }
+        .sec-personal { color: var(--toxic-green); background: rgba(163, 230, 53, 0.12); border-color: rgba(163, 230, 53, 0.25); }
+        .sec-health { color: var(--rose-danger); background: rgba(244, 63, 94, 0.12); border-color: rgba(244, 63, 94, 0.25); }
+        .sec-others { color: #10b981; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.25); }
+
+        .op-due { color: var(--slate-text); }
+        .op-due.urgent { color: var(--amber-alert); font-weight: bold; }
+
+        .btn-trash {
+            background: #112015;
+            color: #55775d;
+            border: 1px solid #1a3321;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+        .btn-trash:hover {
+            color: #ffffff;
+            background: rgba(244, 63, 94, 0.25);
+            border-color: var(--rose-danger);
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.4);
+        }
+
+        .empty-stream-card {
+            background: var(--panel-glass);
+            border: 1px dashed var(--panel-border);
+            border-radius: 6px;
+            padding: 50px 20px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: var(--slate-text);
+            font-size: 12px;
+        }
+
+        /* Memo Box */
+        .notes-block {
+            background: var(--panel-glass);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Tactical Rules Card */
+        .rules-card {
+            background: linear-gradient(135deg, rgba(13, 23, 16, 0.95) 0%, rgba(7, 13, 9, 0.98) 100%);
+            border: 1px solid var(--panel-border);
+            border-left: 3px solid var(--amber-alert);
+            border-radius: 6px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+        }
+
+        .rules-title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--amber-alert);
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(45, 85, 55, 0.4);
+            padding-bottom: 8px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--toxic-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--toxic-green);
+            animation: pulse-dot 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.85); }
+        }
+
+        .rule-entry {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .rule-tag {
+            color: var(--toxic-green);
+            font-weight: bold;
             letter-spacing: 0.5px;
         }
 
-        .prio-high { color: var(--hazard-crimson); }
-        .prio-medium { color: var(--hazard-amber); }
-        .prio-low { color: var(--text-muted); }
-
-        .task-title-text {
-            color: var(--text-light);
-            font-weight: 500;
-            transition: color 0.2s, text-decoration 0.2s;
+        .rule-quote {
+            color: #ffffff;
+            font-style: italic;
         }
 
-        .completed-row .task-title-text {
-            text-decoration: line-through;
-            color: #55725a;
+        .rule-desc {
+            color: var(--slate-text);
+            font-size: 10.5px;
         }
 
-        .btn-delete {
-            background: transparent;
-            color: #55725a;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 4px 8px;
-            border-radius: 3px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-delete:hover {
-            color: var(--hazard-crimson);
-            background: rgba(244, 63, 94, 0.1);
-        }
-
-        /* Empty State */
-        .empty-state {
-            padding: 45px 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-        }
-
-        .empty-state-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-            color: var(--border-glow);
-        }
-
-        /* Field Notes Panel */
-        .notes-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-dim);
-            border-radius: 6px;
-            padding: 16px 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 720px) {
-            .notes-card {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .notes-textarea {
-            width: 100%;
-            min-height: 90px;
-            resize: vertical;
-        }
-
-        .pinned-rules {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.6;
-            color: var(--text-muted);
-            border-left: 2px solid var(--border-glow);
-            padding-left: 14px;
-        }
-
-        .pinned-rules strong {
-            color: var(--toxic-lime);
-        }
-
-        /* Footer */
-        .footer-card {
-            border-top: 1px solid var(--border-dim);
+        /* Console Footer */
+        .console-footer {
+            max-width: 1100px;
+            margin: 28px auto 0;
+            border-top: 1px solid var(--panel-border);
             padding-top: 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             font-family: 'Courier New', monospace;
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--slate-text);
+            flex-wrap: wrap;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .footer-quote {
-            color: var(--hazard-amber);
+            color: var(--amber-alert);
             font-style: italic;
         }
     </style>
 </head>
 <body>
 
-    <!-- Particle Overlay Canvas for Chemistry Sparks / Bubbles -->
-    <canvas id="chemistry-canvas"></canvas>
+    <!-- Canvas: Interactive Molecular Bonds & Benzene Hexagons -->
+    <canvas id="molecule-canvas"></canvas>
 
-    <div class="app-container">
+    <div class="console-split-layout">
 
-        <!-- ========================================== -->
-        <!-- 1. HEISENBERG BRAND HEADER & PROGRESS HUD  -->
-        <!-- ========================================== -->
-        <header class="header-card">
-            <div class="header-brand">
-                <div class="element-badge-group">
-                    <!-- Br 35 -->
-                    <div class="element-badge">
-                        <span class="element-num">35</span>
-                        <span class="element-sym">Br</span>
-                        <span class="element-name">Bromine</span>
+        <!-- ============================================== -->
+        <!-- LEFT COLUMN: SYNTHESIS CONTROLLER              -->
+        <!-- ============================================== -->
+        <aside class="left-controller">
+            <div class="header-brand-block">
+                <div class="periodic-chips">
+                    <div class="p-chip br">
+                        <span class="atomic-num">35</span>
+                        <span class="symbol">Br</span>
                     </div>
-                    <!-- Ba 56 (Heisenberg Pure Blue) -->
-                    <div class="element-badge blue">
-                        <span class="element-num">56</span>
-                        <span class="element-sym">Ba</span>
-                        <span class="element-name">Barium</span>
+                    <div class="p-chip ba">
+                        <span class="atomic-num">56</span>
+                        <span class="symbol">Ba</span>
                     </div>
                 </div>
-
-                <div class="brand-meta">
+                <div class="brand-text">
                     <h1>HEISENBERG</h1>
-                    <p>CHEMISTRY &bull; PRECISION &bull; <span>NO HALF-MEASURES</span></p>
+                    <p>CLASSIFIED DOSSIER &bull; ALBUQUERQUE</p>
                 </div>
             </div>
 
-            <!-- Real-Time Task Progress HUD -->
-            <div class="hud-stats">
-                <div class="hud-counters">
-                    <div class="counter-item">
-                        <div class="c-label">TOTAL</div>
-                        <div class="c-val" id="count-total">0</div>
-                    </div>
-                    <div class="counter-item active">
-                        <div class="c-label">PENDING</div>
-                        <div class="c-val" id="count-pending">0</div>
-                    </div>
-                    <div class="counter-item done">
-                        <div class="c-label">DONE</div>
-                        <div class="c-val" id="count-done">0</div>
-                    </div>
-                    <div class="counter-item purity">
-                        <div class="c-label">PURITY</div>
-                        <div class="c-val" id="count-purity">0%</div>
-                    </div>
+            <!-- Purity / Stat HUD -->
+            <div class="purity-radial-box">
+                <div class="purity-label">
+                    CHEMICAL PURITY
+                    <strong id="d3-purity">0%</strong>
                 </div>
-                <div class="progress-track">
-                    <div class="progress-fill" id="progress-bar"></div>
+                <div class="mini-stat-pills">
+                    <div class="s-pill">
+                        <div class="n" id="d3-total">0</div>
+                        TOTAL
+                    </div>
+                    <div class="s-pill act">
+                        <div class="n" id="d3-pending">0</div>
+                        PENDING
+                    </div>
+                    <div class="s-pill fin">
+                        <div class="n" id="d3-done">0</div>
+                        DONE
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <!-- ========================================== -->
-        <!-- 2. QUICK ADD OPERATION DISPATCH DECK       -->
-        <!-- ========================================== -->
-        <section class="dispatch-card">
-            <div class="card-header-bar">
-                <div>DISPATCH DIRECTIVE // INITIALIZE NEW OPERATION</div>
-                <span>PRESS ENTER TO EXECUTE</span>
-            </div>
-
-            <form id="add-task-form" class="task-form-grid" onsubmit="handleAddTask(event)">
-                <div class="form-group full-span">
-                    <label for="task-title">Operation Title / Task Description</label>
-                    <input type="text" id="task-title" placeholder="Enter operation directive..." autocomplete="off" required>
+            <!-- Dispatch Input Form -->
+            <form id="d3-form" onsubmit="addDossierTask(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                    <label class="form-label" for="d3-title">Operation Directive</label>
+                    <input type="text" id="d3-title" placeholder="Enter operation..." autocomplete="off" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="task-category">Sector Category</label>
-                    <select id="task-category">
-                        <option value="Study">Study</option>
-                        <option value="College">College</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Health">Health</option>
-                        <option value="Others">Others</option>
-                    </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div>
+                        <label class="form-label" for="d3-sector">Sector</label>
+                        <select id="d3-sector">
+                            <option value="Study">Study</option>
+                            <option value="College">College</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Health">Health</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="d3-prio">Priority</label>
+                        <select id="d3-prio">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="task-priority">Priority</label>
-                    <select id="task-priority">
-                        <option value="High">High</option>
-                        <option value="Medium" selected>Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
+                <div>
+                    <label class="form-label" for="d3-date">Execution Deadline</label>
+                    <input type="date" id="d3-date" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="task-date">Deadline</label>
-                    <input type="date" id="task-date" required>
-                </div>
-
-                <button type="submit" class="btn-dispatch full-span">+ ADD OPERATION</button>
+                <button type="submit" class="btn-authorize">+ AUTHORIZE DIRECTIVE</button>
             </form>
-        </section>
 
-        <!-- ========================================== -->
-        <!-- 3. SECTOR FILTER NAVIGATION TABS           -->
-        <!-- ========================================== -->
-        <nav class="filter-nav" id="filter-nav">
-            <button type="button" class="filter-pill active" onclick="setFilter('ALL')">
-                ALL <span class="filter-count" id="pill-all">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('TODAY')">
-                TODAY <span class="filter-count" id="pill-today">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('Study')">
-                STUDY <span class="filter-count" id="pill-study">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('College')">
-                COLLEGE <span class="filter-count" id="pill-college">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('Personal')">
-                PERSONAL <span class="filter-count" id="pill-personal">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('Health')">
-                HEALTH <span class="filter-count" id="pill-health">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('Others')">
-                OTHERS <span class="filter-count" id="pill-others">0</span>
-            </button>
-            <button type="button" class="filter-pill" onclick="setFilter('COMPLETED')">
-                COMPLETED <span class="filter-count" id="pill-completed">0</span>
-            </button>
-        </nav>
+            <!-- Sticky Field Notes -->
+            <div class="notes-block">
+                <span class="form-label" style="display: flex; justify-content: space-between;">
+                    <span>CONFIDENTIAL MEMO</span>
+                    <span id="d3-note-status" style="color: var(--toxic-green);">SAVED</span>
+                </span>
+                <textarea id="d3-note" rows="3" placeholder="Quick formulas, drop points, or reminder notes..." oninput="autoSaveMemo()"></textarea>
+            </div>
 
-        <!-- ========================================== -->
-        <!-- 4. ACTIVE OPERATIONS LEDGER (TASK LIST)    -->
-        <!-- ========================================== -->
-        <main class="ledger-card">
-            <table class="ledger-table">
-                <thead>
-                    <tr>
-                        <th width="48" style="text-align: center;">EXEC</th>
-                        <th width="120">SECTOR</th>
-                        <th>OPERATION DIRECTIVE</th>
-                        <th width="100">PRIORITY</th>
-                        <th width="110">DEADLINE</th>
-                        <th width="48" style="text-align: center;">REVOKE</th>
-                    </tr>
-                </thead>
-                <tbody id="task-table-body">
-                    <!-- Populated dynamically via JavaScript -->
-                </tbody>
-            </table>
+            <!-- Tactical Rules of Engagement -->
+            <div class="rules-card">
+                <div class="rules-title-bar">
+                    <span>// TACTICAL RULES OF ENGAGEMENT</span>
+                    <span class="live-dot" title="Protocol Status: Active"></span>
+                </div>
+
+                <div class="rule-entry">
+                    <div>
+                        <span class="rule-tag">RULE 01:</span> 
+                        <span class="rule-quote">&ldquo;Stay out of my territory.&rdquo;</span>
+                    </div>
+                    <div class="rule-desc">Maintain strict focus on defined operations.</div>
+                </div>
+
+                <div class="rule-entry">
+                    <div>
+                        <span class="rule-tag">RULE 02:</span> 
+                        <span class="rule-quote">&ldquo;No more half-measures.&rdquo;</span>
+                    </div>
+                    <div class="rule-desc">Complete what you initiate to full 99.1% purity.</div>
+                </div>
+
+                <div class="rule-entry">
+                    <div>
+                        <span class="rule-tag">RULE 03:</span> 
+                        <span class="rule-quote">Precision in stoichiometry</span>
+                    </div>
+                    <div class="rule-desc">is the difference between perfection and catastrophe.</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============================================== -->
+        <!-- RIGHT COLUMN: OPERATIONS STREAM FEED           -->
+        <!-- ============================================== -->
+        <main class="right-feed">
+            <!-- Filter Bar -->
+            <nav class="feed-nav-bar">
+                <button class="nav-chip active" onclick="setDossierFilter('ALL')">ALL</button>
+                <button class="nav-chip" onclick="setDossierFilter('TODAY')">TODAY</button>
+                <button class="nav-chip" onclick="setDossierFilter('Study')">STUDY</button>
+                <button class="nav-chip" onclick="setDossierFilter('College')">COLLEGE</button>
+                <button class="nav-chip" onclick="setDossierFilter('Personal')">PERSONAL</button>
+                <button class="nav-chip" onclick="setDossierFilter('Health')">HEALTH</button>
+                <button class="nav-chip" onclick="setDossierFilter('Others')">OTHERS</button>
+                <button class="nav-chip" onclick="setDossierFilter('COMPLETED')">COMPLETED</button>
+            </nav>
+
+            <!-- Stream of Task Items -->
+            <div class="operation-stream" id="dossier-stream">
+                <!-- Populated dynamically with tasks -->
+            </div>
         </main>
-
-        <!-- ========================================== -->
-        <!-- 5. FIELD NOTES & HEISENBERG PROTOCOLS      -->
-        <!-- ========================================== -->
-        <section class="notes-card">
-            <div>
-                <div class="card-header-bar">
-                    <div>ENCRYPTED FIELD NOTES // LOCAL STORAGE</div>
-                    <span id="notes-status">AUTO-SAVED</span>
-                </div>
-                <textarea id="field-notes" class="notes-textarea" placeholder="Record lab observations, drop coordinates, or chemical quantities..." oninput="saveFieldNotes()"></textarea>
-            </div>
-
-            <div class="pinned-rules">
-                <div class="card-header-bar">
-                    <div>TACTICAL RULES OF ENGAGEMENT</div>
-                </div>
-                <p><strong>RULE 01:</strong> "Stay out of my territory." Maintain strict focus on defined operations.</p>
-                <p style="margin-top: 8px;"><strong>RULE 02:</strong> "No more half-measures." Complete what you initiate to full 99.1% purity.</p>
-                <p style="margin-top: 8px;"><strong>RULE 03:</strong> Precision in stoichiometry is the difference between perfection and catastrophe.</p>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- 6. FOOTER                                  -->
-        <!-- ========================================== -->
-        <footer class="footer-card">
-            <div>HEISENBERG OPERATIONS REGISTRY &bull; ALBUQUERQUE, NM</div>
-            <div class="footer-quote">"Say my name. I am the one who knocks."</div>
-        </footer>
 
     </div>
 
-    <!-- ============================================================== -->
-    <!-- JAVASCRIPT: TASK ENGINE & INTERACTIVE CHEMISTRY PARTICLES      -->
-    <!-- ============================================================== -->
+    <!-- Master Console Footer -->
+    <footer class="console-footer">
+        <div class="footer-meta">
+            <span>HEISENBERG OPERATIONS REGISTRY</span> &bull; 
+            <span>ALBUQUERQUE, NM</span> &bull; 
+            <span style="color: var(--toxic-green);">99.1% PURITY SPEC</span>
+        </div>
+        <div class="footer-quote">
+            &ldquo;Say my name. I am the one who knocks.&rdquo;
+        </div>
+    </footer>
+
+    <!-- JavaScript: Dossier Task Engine & Molecular Lattice Animation -->
     <script>
-        // -------------------------------------------------------------
-        // A. DATA & STATE MANAGEMENT (LOCAL STORAGE)
-        // -------------------------------------------------------------
         let tasks = [];
         let currentFilter = 'ALL';
 
-        // Set default date picker to today's date
         window.addEventListener('DOMContentLoaded', () => {
             const todayStr = new Date().toISOString().split('T')[0];
-            const dateInput = document.getElementById('task-date');
+            const dateInput = document.getElementById('d3-date');
             if (dateInput) dateInput.value = todayStr;
 
-            loadTasks();
-            loadFieldNotes();
-            initChemistryParticles();
+            loadDossierData();
+            initMolecularCanvas();
         });
 
-        function loadTasks() {
+        function loadDossierData() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            const nextDayStr = new Date(Date.now() + 172800000).toISOString().split('T')[0];
+            const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+            // Initial rich tasks so the right side is full and active
+            const defaultInitialTasks = [
+                {
+                    id: 'MD-0991',
+                    title: 'Calibrate vacuum distillation apparatus for catalytic P2P amination',
+                    category: 'Study',
+                    priority: 'High',
+                    deadline: todayStr,
+                    completed: false
+                },
+                {
+                    id: 'MD-0402',
+                    title: 'Grade Period 3 AP Chemistry stoichiometry midterm exam papers',
+                    category: 'College',
+                    priority: 'Medium',
+                    deadline: todayStr,
+                    completed: false
+                },
+                {
+                    id: 'MD-0118',
+                    title: 'Reconcile A1A Car Wash cash receipts register #2 with Skyler',
+                    category: 'Personal',
+                    priority: 'High',
+                    deadline: tomorrowStr,
+                    completed: false
+                },
+                {
+                    id: 'MD-0331',
+                    title: 'PET/CT pulmonary scan consultation appointment with Dr. Delcavoli',
+                    category: 'Health',
+                    priority: 'High',
+                    deadline: nextDayStr,
+                    completed: false
+                },
+                {
+                    id: 'MD-0884',
+                    title: 'Intercept 35-gallon methylamine precursor drum consignment',
+                    category: 'Others',
+                    priority: 'High',
+                    deadline: nextDayStr,
+                    completed: false
+                },
+                {
+                    id: 'MD-0105',
+                    title: 'Submit chemical lab glassware inventory report to Principal Lewis',
+                    category: 'College',
+                    priority: 'Low',
+                    deadline: yesterdayStr,
+                    completed: true
+                },
+                {
+                    id: 'MD-0108',
+                    title: 'Replace activated carbon filters on subterranean exhaust scrubbers',
+                    category: 'Study',
+                    priority: 'Medium',
+                    deadline: yesterdayStr,
+                    completed: true
+                }
+            ];
+
             try {
                 const stored = localStorage.getItem('heisenberg_tasks');
-                tasks = stored ? JSON.parse(stored) : [];
+                if (stored && JSON.parse(stored).length > 0) {
+                    tasks = JSON.parse(stored);
+                } else {
+                    tasks = defaultInitialTasks;
+                    localStorage.setItem('heisenberg_tasks', JSON.stringify(tasks));
+                }
             } catch (e) {
-                tasks = [];
+                tasks = defaultInitialTasks;
             }
-            renderTasks();
+
+            renderDossier();
+
+            const savedNote = localStorage.getItem('heisenberg_field_notes');
+            if (savedNote) {
+                document.getElementById('d3-note').value = savedNote;
+            } else {
+                const defaultNote = "Albuquerque synthesis protocol: maintain condenser threshold at 82°C. Purity confirmed at 99.1%. No more half-measures.";
+                document.getElementById('d3-note').value = defaultNote;
+                localStorage.setItem('heisenberg_field_notes', defaultNote);
+            }
         }
 
-        function saveTasks() {
+        function saveDossierData() {
             localStorage.setItem('heisenberg_tasks', JSON.stringify(tasks));
-            renderTasks();
+            renderDossier();
         }
 
-        function handleAddTask(e) {
+        function addDossierTask(e) {
             e.preventDefault();
-            const titleInput = document.getElementById('task-title');
-            const categoryInput = document.getElementById('task-category');
-            const priorityInput = document.getElementById('task-priority');
-            const dateInput = document.getElementById('task-date');
+            const titleInput = document.getElementById('d3-title');
+            const sectorInput = document.getElementById('d3-sector');
+            const prioInput = document.getElementById('d3-prio');
+            const dateInput = document.getElementById('d3-date');
 
             const title = titleInput.value.trim();
             if (!title) return;
 
             const newTask = {
-                id: 'HB-' + Date.now().toString(36).toUpperCase(),
+                id: 'MD-' + Date.now().toString(36).toUpperCase(),
                 title: title,
-                category: categoryInput.value,
-                priority: priorityInput.value,
+                category: sectorInput.value,
+                priority: prioInput.value,
                 deadline: dateInput.value,
-                completed: false,
-                createdAt: new Date().toISOString()
+                completed: false
             };
 
             tasks.unshift(newTask);
-            saveTasks();
-
-            // Clear input & trigger mini particle burst
+            saveDossierData();
             titleInput.value = '';
             titleInput.focus();
-            createChemicalBurst(window.innerWidth / 2, 200, 16);
+
+            if (window.emitMolecularShockwave) window.emitMolecularShockwave(window.innerWidth / 2, 200);
         }
 
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks();
+        function toggleDossierTask(id) {
+            const t = tasks.find(x => x.id === id);
+            if (t) {
+                t.completed = !t.completed;
+                saveDossierData();
             }
         }
 
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasks();
+        function deleteDossierTask(id) {
+            tasks = tasks.filter(x => x.id !== id);
+            saveDossierData();
         }
 
-        function setFilter(filter) {
+        function setDossierFilter(filter) {
             currentFilter = filter;
-            // Update UI buttons
-            document.querySelectorAll('.filter-pill').forEach(btn => {
+            document.querySelectorAll('.nav-chip').forEach(btn => {
                 const text = btn.innerText.split(' ')[0];
                 if (text === filter) {
                     btn.classList.add('active');
@@ -901,17 +923,13 @@
                     btn.classList.remove('active');
                 }
             });
-            renderTasks();
+            renderDossier();
         }
 
-        // -------------------------------------------------------------
-        // B. RENDERING & STATS
-        // -------------------------------------------------------------
-        function renderTasks() {
-            const tableBody = document.getElementById('task-table-body');
+        function renderDossier() {
+            const stream = document.getElementById('dossier-stream');
             const todayStr = new Date().toISOString().split('T')[0];
 
-            // Filter logic
             let filtered = tasks;
             if (currentFilter === 'TODAY') {
                 filtered = tasks.filter(t => t.deadline === todayStr && !t.completed);
@@ -921,273 +939,219 @@
                 filtered = tasks.filter(t => t.category === currentFilter);
             }
 
-            // Update Counters & HUD
+            // Stats
             const total = tasks.length;
             const completed = tasks.filter(t => t.completed).length;
             const pending = total - completed;
             const purity = total > 0 ? Math.round((completed / total) * 99.1) : 0;
 
-            document.getElementById('count-total').innerText = total;
-            document.getElementById('count-pending').innerText = pending;
-            document.getElementById('count-done').innerText = completed;
-            document.getElementById('count-purity').innerText = purity + '%';
-            document.getElementById('progress-bar').style.width = (total > 0 ? (completed / total) * 100 : 0) + '%';
+            document.getElementById('d3-total').innerText = total;
+            document.getElementById('d3-pending').innerText = pending;
+            document.getElementById('d3-done').innerText = completed;
+            document.getElementById('d3-purity').innerText = purity + '%';
 
-            // Update Filter Badges
-            document.getElementById('pill-all').innerText = total;
-            document.getElementById('pill-today').innerText = tasks.filter(t => t.deadline === todayStr && !t.completed).length;
-            document.getElementById('pill-study').innerText = tasks.filter(t => t.category === 'Study').length;
-            document.getElementById('pill-college').innerText = tasks.filter(t => t.category === 'College').length;
-            document.getElementById('pill-personal').innerText = tasks.filter(t => t.category === 'Personal').length;
-            document.getElementById('pill-health').innerText = tasks.filter(t => t.category === 'Health').length;
-            document.getElementById('pill-others').innerText = tasks.filter(t => t.category === 'Others').length;
-            document.getElementById('pill-completed').innerText = completed;
+            // Filter chips with counts
+            const chips = document.querySelectorAll('.nav-chip');
+            chips[0].innerText = `ALL (${total})`;
+            chips[1].innerText = `TODAY (${tasks.filter(t => t.deadline === todayStr && !t.completed).length})`;
+            chips[2].innerText = `STUDY (${tasks.filter(t => t.category === 'Study').length})`;
+            chips[3].innerText = `COLLEGE (${tasks.filter(t => t.category === 'College').length})`;
+            chips[4].innerText = `PERSONAL (${tasks.filter(t => t.category === 'Personal').length})`;
+            chips[5].innerText = `HEALTH (${tasks.filter(t => t.category === 'Health').length})`;
+            chips[6].innerText = `OTHERS (${tasks.filter(t => t.category === 'Others').length})`;
+            chips[7].innerText = `COMPLETED (${completed})`;
 
-            // Render Rows
             if (filtered.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">&#9883;</div>
-                                <div>NO ACTIVE OPERATIONS DETECTED IN THIS SECTOR</div>
-                                <div style="font-size: 11px; margin-top: 4px; color: #55725a;">Use the dispatch deck above to initialize your plan.</div>
-                            </div>
-                        </td>
-                    </tr>
+                stream.innerHTML = `
+                    <div class="empty-stream-card">
+                        <div style="font-size: 26px; margin-bottom: 8px;">&#11041;</div>
+                        <div>MOLECULAR DOSSIER EMPTY &bull; ZERO ACTIVE DIRECTIVES</div>
+                        <div style="font-size: 11px; margin-top: 4px; color: #49634e;">Use the synthesis controller to authorize a new operation.</div>
+                    </div>
                 `;
                 return;
             }
 
-            tableBody.innerHTML = filtered.map(task => {
-                const catClass = 'cat-' + task.category.toLowerCase();
-                const prioClass = 'prio-' + task.priority.toLowerCase();
-                const completedClass = task.completed ? 'completed-row' : '';
+            stream.innerHTML = filtered.map(t => {
+                const secClass = 'sec-' + t.category.toLowerCase();
+                const secBorderClass = 'sec-border-' + t.category.toLowerCase();
+                const isUrgent = t.deadline === todayStr;
 
                 return `
-                    <tr class="${completedClass}">
-                        <td align="center">
-                            <label class="checkbox-container">
-                                <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${task.id}')">
-                                <span class="checkmark"></span>
+                    <div class="stream-item ${secBorderClass} ${t.completed ? 'done' : ''}">
+                        <div class="item-left">
+                            <label class="custom-chem-check" title="Toggle Operation State">
+                                <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleDossierTask('${t.id}')">
+                                <span class="chem-checkmark"></span>
                             </label>
-                        </td>
-                        <td>
-                            <span class="category-badge ${catClass}">[${task.category.toUpperCase()}]</span>
-                        </td>
-                        <td>
-                            <span class="task-title-text">${escapeHtml(task.title)}</span>
-                        </td>
-                        <td>
-                            <span class="priority-badge ${prioClass}">${task.priority.toUpperCase()}</span>
-                        </td>
-                        <td>
-                            <span style="font-family: 'Courier New', monospace; font-size: 11px; color: ${task.deadline === todayStr ? '#f59e0b' : '#7d9c82'};">
-                                ${task.deadline || 'NO DATE'}
-                            </span>
-                        </td>
-                        <td align="center">
-                            <button type="button" class="btn-delete" title="Revoke Operation" onclick="deleteTask('${task.id}')">&#10005;</button>
-                        </td>
-                    </tr>
+                            <div>
+                                <div class="op-title">${escapeStr(t.title)}</div>
+                                <div class="op-meta-line">
+                                    <span class="chip-sec ${secClass}">[${t.category.toUpperCase()}]</span>
+                                    <span style="color: ${t.priority === 'High' ? '#f43f5e' : (t.priority === 'Medium' ? '#f59e0b' : '#82a388')};">&bull; ${t.priority.toUpperCase()}</span>
+                                    <span class="op-due ${isUrgent ? 'urgent' : ''}">DEADLINE: ${t.deadline || 'NONE'}</span>
+                                    ${t.completed ? '<span style="color: var(--toxic-green); font-weight: bold; margin-left: 4px;">&bull; [EXECUTED]</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-trash" title="Delete Directive" onclick="deleteDossierTask('${t.id}')">&#10005;</button>
+                    </div>
                 `;
             }).join('');
         }
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        function escapeStr(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
-        // -------------------------------------------------------------
-        // C. FIELD NOTES (AUTO-SAVE)
-        // -------------------------------------------------------------
-        function saveFieldNotes() {
-            const noteText = document.getElementById('field-notes').value;
-            localStorage.setItem('heisenberg_field_notes', noteText);
-            const status = document.getElementById('notes-status');
+        function autoSaveMemo() {
+            const v = document.getElementById('d3-note').value;
+            localStorage.setItem('heisenberg_field_notes', v);
+            const status = document.getElementById('d3-note-status');
             status.innerText = 'SAVING...';
-            setTimeout(() => {
-                status.innerText = 'SAVED';
-            }, 400);
-        }
-
-        function loadFieldNotes() {
-            const saved = localStorage.getItem('heisenberg_field_notes');
-            if (saved !== null) {
-                document.getElementById('field-notes').value = saved;
-            }
+            setTimeout(() => { status.innerText = 'SAVED'; }, 300);
         }
 
         // -------------------------------------------------------------
-        // D. MOUSE MOVE CHEMISTRY SPARKLES & BUBBLES ANIMATION
+        // MOLECULAR LATTICE & BENZENE HEXAGON MOUSE ANIMATION
         // -------------------------------------------------------------
-        function initChemistryParticles() {
-            const canvas = document.getElementById('chemistry-canvas');
+        function initMolecularCanvas() {
+            const canvas = document.getElementById('molecule-canvas');
             const ctx = canvas.getContext('2d');
-
-            let width = (canvas.width = window.innerWidth);
-            let height = (canvas.height = window.innerHeight);
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
 
             window.addEventListener('resize', () => {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
             });
 
-            const particles = [];
-            let mouseX = -100;
-            let mouseY = -100;
-            let lastMouseX = -100;
-            let lastMouseY = -100;
+            const nodes = [];
+            const hexagons = [];
+            const nodeCount = 38;
 
-            window.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                // Calculate mouse velocity
-                const dx = mouseX - lastMouseX;
-                const dy = mouseY - lastMouseY;
-                const speed = Math.sqrt(dx * dx + dy * dy);
-
-                // Spawn 1 to 3 particles per move
-                const count = Math.min(Math.floor(speed / 4) + 1, 4);
-                for (let i = 0; i < count; i++) {
-                    spawnChemistryParticle(mouseX, mouseY);
-                }
-
-                lastMouseX = mouseX;
-                lastMouseY = mouseY;
-            });
-
-            window.addEventListener('click', (e) => {
-                createChemicalBurst(e.clientX, e.clientY, 14);
-            });
-
-            function spawnChemistryParticle(x, y) {
-                // Alternating chemistry effects: Micro-bubble, Crystal Sparkle, or Vapor dot
-                const types = ['bubble', 'crystal', 'fume'];
-                const type = types[Math.floor(Math.random() * types.length)];
-
-                // Color palette: Heisenberg 99.1% pure cyan, radioactive lime, hazard amber
-                const colors = [
-                    { r: 56, g: 189, b: 248 },  // Crystal blue
-                    { r: 0, g: 242, b: 254 },   // Neon cyan
-                    { r: 163, g: 230, b: 53 },  // Toxic lime
-                    { r: 245, g: 158, b: 11 }   // Hazard amber
-                ];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-
-                particles.push({
-                    x: x + (Math.random() * 12 - 6),
-                    y: y + (Math.random() * 12 - 6),
-                    vx: (Math.random() - 0.5) * 1.5,
-                    vy: -Math.random() * 1.8 - 0.5, // gentle buoyant rise
-                    size: type === 'bubble' ? Math.random() * 4 + 3 : Math.random() * 3 + 2,
-                    alpha: 1,
-                    decay: Math.random() * 0.025 + 0.015,
-                    rotation: Math.random() * Math.PI * 2,
-                    rotSpeed: (Math.random() - 0.5) * 0.1,
-                    type: type,
-                    color: color,
-                    wobble: Math.random() * 5
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.7,
+                    vy: (Math.random() - 0.5) * 0.7,
+                    radius: Math.random() * 2 + 1.5,
+                    color: Math.random() > 0.5 ? '163, 230, 53' : '56, 189, 248'
                 });
             }
 
-            window.createChemicalBurst = function(x, y, amount) {
-                for (let i = 0; i < amount; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 4 + 1;
-                    const colors = [
-                        { r: 56, g: 189, b: 248 },
-                        { r: 0, g: 242, b: 254 },
-                        { r: 163, g: 230, b: 53 }
-                    ];
-                    particles.push({
-                        x: x,
-                        y: y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed - 1,
-                        size: Math.random() * 4 + 2,
-                        alpha: 1,
-                        decay: Math.random() * 0.03 + 0.02,
+            let mouse = { x: -200, y: -200 };
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+
+                if (Math.random() > 0.35) {
+                    hexagons.push({
+                        x: mouse.x,
+                        y: mouse.y,
+                        radius: Math.random() * 8 + 6,
+                        rotation: Math.random() * Math.PI,
+                        rotSpeed: (Math.random() - 0.5) * 0.08,
+                        alpha: 0.9,
+                        decay: 0.02,
+                        color: Math.random() > 0.4 ? '163, 230, 53' : '56, 189, 248'
+                    });
+                }
+            });
+
+            window.emitMolecularShockwave = function(x, y) {
+                for (let i = 0; i < 10; i++) {
+                    hexagons.push({
+                        x: x + (Math.random() - 0.5) * 60,
+                        y: y + (Math.random() - 0.5) * 60,
+                        radius: Math.random() * 14 + 8,
                         rotation: Math.random() * Math.PI,
                         rotSpeed: 0.1,
-                        type: 'crystal',
-                        color: colors[Math.floor(Math.random() * colors.length)],
-                        wobble: 0
+                        alpha: 1,
+                        decay: 0.015,
+                        color: '56, 189, 248'
                     });
                 }
             };
 
+            function drawHexagon(x, y, r, angle) {
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const a = angle + (i * Math.PI) / 3;
+                    const px = x + r * Math.cos(a);
+                    const py = y + r * Math.sin(a);
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+            }
+
             function animate() {
-                ctx.clearRect(0, 0, width, height);
+                ctx.clearRect(0, 0, w, h);
 
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    n.x += n.vx;
+                    n.y += n.vy;
 
-                    p.x += p.vx + Math.sin(p.y * 0.05 + p.wobble) * 0.4;
-                    p.y += p.vy;
-                    p.alpha -= p.decay;
-                    p.rotation += p.rotSpeed;
+                    if (n.x < 0 || n.x > w) n.vx *= -1;
+                    if (n.y < 0 || n.y > h) n.vy *= -1;
 
-                    if (p.alpha <= 0) {
-                        particles.splice(i, 1);
+                    ctx.fillStyle = `rgba(${n.color}, 0.7)`;
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    const dMouse = Math.hypot(n.x - mouse.x, n.y - mouse.y);
+                    if (dMouse < 130) {
+                        const alpha = (1 - dMouse / 130) * 0.75;
+                        ctx.strokeStyle = `rgba(${n.color}, ${alpha})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(n.x, n.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n2 = nodes[j];
+                        const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+                        if (dist < 80) {
+                            const alpha = (1 - dist / 80) * 0.25;
+                            ctx.strokeStyle = `rgba(163, 230, 53, ${alpha})`;
+                            ctx.lineWidth = 0.6;
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                for (let k = hexagons.length - 1; k >= 0; k--) {
+                    const hx = hexagons[k];
+                    hx.rotation += hx.rotSpeed;
+                    hx.alpha -= hx.decay;
+                    hx.radius += 0.3;
+
+                    if (hx.alpha <= 0) {
+                        hexagons.splice(k, 1);
                         continue;
                     }
 
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.rotation);
-
-                    const rgb = `${p.color.r}, ${p.color.g}, ${p.color.b}`;
-
-                    if (p.type === 'crystal') {
-                        // 4-pointed crystal spark (Breaking Bad blue meth crystal shard)
-                        ctx.fillStyle = `rgba(${rgb}, ${p.alpha})`;
-                        ctx.shadowColor = `rgba(${rgb}, 0.8)`;
-                        ctx.shadowBlur = 6;
-                        ctx.beginPath();
-                        ctx.moveTo(0, -p.size * 1.5);
-                        ctx.lineTo(p.size * 0.6, 0);
-                        ctx.moveTo(0, p.size * 1.5);
-                        ctx.lineTo(-p.size * 0.6, 0);
-                        ctx.arc(0, 0, p.size * 0.4, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (p.type === 'bubble') {
-                        // Effervescent chemical reaction micro-bubble
-                        ctx.strokeStyle = `rgba(${rgb}, ${p.alpha * 0.8})`;
-                        ctx.lineWidth = 1;
-                        ctx.fillStyle = `rgba(${rgb}, ${p.alpha * 0.2})`;
-                        ctx.shadowColor = `rgba(${rgb}, 0.5)`;
-                        ctx.shadowBlur = 4;
-                        ctx.beginPath();
-                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-                        ctx.stroke();
-                        ctx.fill();
-
-                        // Tiny specular glint on top-left of bubble
-                        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.7})`;
-                        ctx.beginPath();
-                        ctx.arc(-p.size * 0.3, -p.size * 0.3, p.size * 0.25, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        // Soft chemical fume vapor
-                        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 1.5);
-                        gradient.addColorStop(0, `rgba(${rgb}, ${p.alpha * 0.5})`);
-                        gradient.addColorStop(1, `rgba(${rgb}, 0)`);
-                        ctx.fillStyle = gradient;
-                        ctx.beginPath();
-                        ctx.arc(0, 0, p.size * 1.5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-
-                    ctx.restore();
+                    ctx.strokeStyle = `rgba(${hx.color}, ${hx.alpha})`;
+                    ctx.lineWidth = 1;
+                    drawHexagon(hx.x, hx.y, hx.radius, hx.rotation);
+                    ctx.stroke();
                 }
 
                 requestAnimationFrame(animate);
             }
-
             animate();
         }
     </script>
 </body>
 </html>
+
