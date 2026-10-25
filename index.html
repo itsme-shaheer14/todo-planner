@@ -3,279 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEISENBERG OS | Tactical Empire Operations</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>HEISENBERG'S TO-DO LIST // DAILY TASK PLANNER</title>
+    <!-- Dark theme styling for input controls to eliminate white spots -->
+    <style>
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            background-color: #16251A;
+            color: #C4F84C;
+            border: 1px solid #2D4D32;
+            padding: 6px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: 1px solid #C4F84C;
+            background-color: #1A2E20;
+        }
+
+        input[type="submit"],
+        button {
+            background-color: #223B26;
+            color: #C4F84C;
+            border: 1px solid #3E6944;
+            padding: 7px 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #2E4F34;
+            color: #FFFFFF;
+        }
+
+        /* Calendar picker icon color adjustment */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(45deg);
+            cursor: pointer;
+        }
+
+        /* Clean navigation link styling */
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body>
-    <!-- Background Chemical Mist Canvas -->
-    <canvas id="particleCanvas"></canvas>
-    <div class="scanlines"></div>
+<body bgcolor="#0B120C" text="#A3E635" link="#C4F84C" vlink="#8DA358" alink="#FFFFFF">
+<a name="top"></a>
 
-    <div class="app-layout">
-        <!-- LEFT SIDEBAR -->
-        <aside class="sidebar">
-            <div class="brand-hub">
-                <div class="brand-logo-elem">
-                    <small>2</small>
-                    <span>He</span>
-                </div>
-                <div class="brand-meta">
-                    <h1>HEISENBERG</h1>
-                    <p>EMPIRE ARCHITECTURE</p>
-                </div>
-            </div>
+<!-- ============================================================== -->
+<!-- MASTER CENTERED CONTAINER (Compact width with side margins)    -->
+<!-- ============================================================== -->
+<center>
+<table width="940" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td>
 
-            <!-- Operations Navigation Radar -->
-            <div class="nav-section">
-                <h4>Operations Radar</h4>
-                <ul class="nav-links">
-                    <li class="nav-item active" data-filter="all">
-                        <span>🧪 All Tasks</span>
-                        <span class="badge" id="badgeAll">4</span>
-                    </li>
-                    <li class="nav-item" data-filter="today">
-                        <span>⚡ Today</span>
-                        <span class="badge" id="badgeToday">2</span>
-                    </li>
-                    <li class="nav-item" data-filter="high">
-                        <span>🚨 Critical (Red)</span>
-                        <span class="badge" id="badgeHigh">1</span>
-                    </li>
-                    <li class="nav-item" data-filter="completed">
-                        <span>✅ Synthesized</span>
-                        <span class="badge" id="badgeCompleted">0</span>
-                    </li>
-                </ul>
-            </div>
+    <!-- ============================================================== -->
+    <!-- 1. HEADER: BRAND & PROGRESS STATUS (CLEAN / READY FOR USE)     -->
+    <!-- ============================================================== -->
+    <table width="100%" bgcolor="#070C08" border="1" bordercolor="#2D4D32" cellpadding="10" cellspacing="0">
+        <tr>
+            <!-- Element 1: Br -->
+            <td width="60" align="center" valign="middle" bgcolor="#16251A">
+                <font face="Courier New, monospace" size="1" color="#E5A93C">35</font><br>
+                <font face="Impact, Arial Black, sans-serif" size="5" color="#C4F84C"><b>Br</b></font><br>
+                <font face="Arial, sans-serif" size="1" color="#8FA885">BROMINE</font>
+            </td>
 
-            <!-- Operation Sectors -->
-            <div class="category-section">
-                <h4>Operation Sectors</h4>
-                <ul class="category-list">
-                    <li class="cat-item active" data-cat="all">
-                        <span class="cat-dot" style="background:#00ff73; color:#00ff73;"></span>
-                        <span>All Sectors</span>
-                    </li>
-                    <li class="cat-item" data-cat="Lab Cook">
-                        <span class="cat-dot" style="background:#00f0ff; color:#00f0ff;"></span>
-                        <span>Lab Chemistry</span>
-                    </li>
-                    <li class="cat-item" data-cat="College/Study">
-                        <span class="cat-dot" style="background:#b5ff2a; color:#b5ff2a;"></span>
-                        <span>College & Study</span>
-                    </li>
-                    <li class="cat-item" data-cat="Empire Business">
-                        <span class="cat-dot" style="background:#ffaa00; color:#ffaa00;"></span>
-                        <span>Empire Business</span>
-                    </li>
-                    <li class="cat-item" data-cat="Classified">
-                        <span class="cat-dot" style="background:#ff3344; color:#ff3344;"></span>
-                        <span>Classified Op</span>
-                    </li>
-                </ul>
-            </div>
+            <!-- Element 2: Ba -->
+            <td width="60" align="center" valign="middle" bgcolor="#16251A">
+                <font face="Courier New, monospace" size="1" color="#E5A93C">56</font><br>
+                <font face="Impact, Arial Black, sans-serif" size="5" color="#C4F84C"><b>Ba</b></font><br>
+                <font face="Arial, sans-serif" size="1" color="#8FA885">BARIUM</font>
+            </td>
 
-            <div class="sidebar-quote">
-                <p>"No more half-measures. Execute the plan with absolute precision."</p>
-                <span>— HEISENBERG PROTOCOL</span>
-            </div>
-        </aside>
+            <!-- Title & Slogan -->
+            <td align="left" valign="middle" bgcolor="#0E1710">
+                <font face="Courier New, monospace" size="1" color="#E5A93C">
+                    <b>DAILY TASK MANAGER &bull; ALBUQUERQUE DISPATCH</b>
+                </font>
+                <br>
+                <font face="Arial Black, Impact, sans-serif" size="5" color="#C4F84C">
+                    HEISENBERG'S TO-DO LIST
+                </font>
+                <br>
+                <font face="Verdana, sans-serif" size="2" color="#8FA885">
+                    <i>"No more half-measures. Execute the plan."</i>
+                </font>
+            </td>
 
-        <!-- CENTER MAIN WORKSPACE -->
-        <main class="main-content">
-            <!-- Top HUD Bar -->
-            <div class="top-hud">
-                <div class="search-box">
-                    <span>🔍</span>
-                    <input type="text" id="searchInput" placeholder="Search classified operations...">
-                </div>
-                <div class="hud-status">
-                    <div class="live-clock">
-                        <span>📡 ALBUQUERQUE:</span>
-                        <span id="liveClockText">--:--:--</span>
-                    </div>
-                    <button class="sfx-toggle" id="sfxToggle">
-                        <span>🔊 SFX: ON</span>
-                    </button>
-                </div>
-            </div>
+            <!-- Task Counter Box (Initial Zero State) -->
+            <td width="260" align="center" valign="middle" bgcolor="#121D15">
+                <table width="100%" border="1" bordercolor="#3E6944" cellpadding="4" cellspacing="0" bgcolor="#16251A">
+                    <tr bgcolor="#1B2E21" align="center">
+                        <th colspan="4">
+                            <font face="Courier New, monospace" size="1" color="#E5A93C">
+                                <b>TASK STATUS</b>
+                            </font>
+                        </th>
+                    </tr>
+                    <tr align="center">
+                        <td width="25%">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">TOTAL</font><br>
+                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0</b></font>
+                        </td>
+                        <td width="25%">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">PENDING</font><br>
+                            <font face="Impact, Arial Black, sans-serif" size="4" color="#E5A93C"><b>0</b></font>
+                        </td>
+                        <td width="25%">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">DONE</font><br>
+                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0</b></font>
+                        </td>
+                        <td width="25%">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">PROGRESS</font><br>
+                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0%</b></font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="center" bgcolor="#0B120C">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">COMPLETION: </font>
+                            <progress value="0" max="100"></progress>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-            <!-- Empire Classified Banner -->
-            <div class="empire-banner">
-                <div class="banner-info">
-                    <div class="classification">
-                        <span class="blink-dot"></span>
-                        DAILY OPERATIONS • CLASSIFIED LEVEL 5
-                    </div>
-                    <h2>HEISENBERG'S LIST</h2>
-                    <p>Respect the chemistry. Control the territory. Zero tolerance for errors.</p>
-                </div>
-                <div class="banner-badge">
-                    <div class="purity-val" id="purityRate">99.1%</div>
-                    <div class="purity-sub">TARGET PURITY</div>
-                </div>
-            </div>
+    <br>
 
-            <!-- Metric Stat Cards -->
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📋</div>
-                    <div class="stat-details">
-                        <div class="stat-num" id="statTotal">0</div>
-                        <div class="stat-lbl">TOTAL OPERATIONS</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:var(--neon-green)">💎</div>
-                    <div class="stat-details">
-                        <div class="stat-num" id="statDone" style="color:var(--neon-green)">0</div>
-                        <div class="stat-lbl">SYNTHESIZED</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:var(--amber-warn)">⏳</div>
-                    <div class="stat-details">
-                        <div class="stat-num" id="statPending" style="color:var(--amber-warn)">0</div>
-                        <div class="stat-lbl">IN PROGRESS</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:var(--meth-blue)">📈</div>
-                    <div class="stat-details">
-                        <div class="stat-num" id="statEfficiency" style="color:var(--meth-blue)">0%</div>
-                        <div class="stat-lbl">EFFICIENCY</div>
-                    </div>
-                </div>
-            </div>
+    <!-- ============================================================== -->
+    <!-- 2. QUICK ADD TASK BAR (READY FOR USER INPUT)                   -->
+    <!-- ============================================================== -->
+    <form action="#" method="get">
+        <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
+            <tr bgcolor="#1B2E21">
+                <th colspan="5" align="left">
+                    <font face="Courier New, monospace" size="2" color="#E5A93C">
+                        <b>ADD NEW TASK</b>
+                    </font>
+                </th>
+            </tr>
+            <tr bgcolor="#16251A" align="center">
+                <!-- Task Description -->
+                <td width="38%" align="left">
+                    <font face="Courier New, monospace" size="1" color="#8FA885">TASK DESCRIPTION:</font><br>
+                    <input type="text" name="task_title" size="34" placeholder="Enter your next task..." required>
+                </td>
 
-            <!-- Operation Dispatcher (Form) -->
-            <section class="operation-creator">
-                <div class="creator-title">⚡ DISPATCH NEW OPERATION</div>
-                <form class="creator-form" id="operationForm">
-                    <div class="main-input-wrap">
-                        <input type="text" id="taskInput" placeholder="Enter objective codename or assignment..." required autocomplete="off">
-                    </div>
-                    <div class="form-row">
-                        <select class="custom-select" id="taskCategory">
-                            <option value="College/Study">College & Study</option>
-                            <option value="Lab Cook">Lab Chemistry</option>
-                            <option value="Empire Business">Empire Business</option>
-                            <option value="Classified">Classified Op</option>
-                        </select>
-                        <select class="custom-select" id="taskPriority">
-                            <option value="Medium">Medium Priority</option>
-                            <option value="High">🚨 Code Red (High)</option>
-                            <option value="Low">Standard (Low)</option>
-                        </select>
-                        <input type="date" class="date-input" id="taskDate">
-                        <button type="submit" class="btn-dispatch">
-                            <span>+ DISPATCH OPERATION</span>
-                        </button>
-                    </div>
+                <!-- Category -->
+                <td width="18%" align="left">
+                    <font face="Courier New, monospace" size="1" color="#8FA885">CATEGORY:</font><br>
+                    <select name="category" required>
+                        <option value="Study">Study</option>
+                        <option value="College">College</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Health">Health</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </td>
+
+                <!-- Priority -->
+                <td width="16%" align="left">
+                    <font face="Courier New, monospace" size="1" color="#8FA885">PRIORITY:</font><br>
+                    <select name="priority">
+                        <option value="High">High</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </td>
+
+                <!-- Due Date -->
+                <td width="16%" align="left">
+                    <font face="Courier New, monospace" size="1" color="#8FA885">DUE DATE:</font><br>
+                    <input type="date" name="due_date" required>
+                </td>
+
+                <!-- Submit Button -->
+                <td width="12%" align="center" valign="bottom">
+                    <input type="submit" value="+ ADD TO-DO">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+
+    <!-- ============================================================== -->
+    <!-- 3. NAVIGATION TABS (INITIAL ZERO COUNTERS)                     -->
+    <!-- ============================================================== -->
+    <table width="100%" bgcolor="#0E1710" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
+        <tr align="center">
+            <td width="12%" bgcolor="#1B2E21">
+                <a href="#today"><font face="Courier New, monospace" size="2" color="#FFFFFF"><b>TODAY (0)</b></font></a>
+            </td>
+            <td width="12%" bgcolor="#16251A">
+                <a href="#study"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>STUDY (0)</b></font></a>
+            </td>
+            <td width="12%" bgcolor="#16251A">
+                <a href="#college"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>COLLEGE (0)</b></font></a>
+            </td>
+            <td width="12%" bgcolor="#16251A">
+                <a href="#personal"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>PERSONAL (0)</b></font></a>
+            </td>
+            <td width="12%" bgcolor="#16251A">
+                <a href="#health"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>HEALTH (0)</b></font></a>
+            </td>
+            <td width="12%" bgcolor="#16251A">
+                <a href="#others"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>OTHERS (0)</b></font></a>
+            </td>
+            <td width="14%" bgcolor="#16251A">
+                <a href="#completed"><font face="Courier New, monospace" size="2" color="#8FA885"><b>COMPLETED (0)</b></font></a>
+            </td>
+            <td width="14%" bgcolor="#16251A">
+                <a href="#notes"><font face="Courier New, monospace" size="2" color="#E5A93C"><b>FIELD NOTES</b></font></a>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- ============================================================== -->
+    <!-- 4. TODAY'S FOCUS CHECKLIST (EMPTY READY STATE)                 -->
+    <!-- ============================================================== -->
+    <a name="today"></a>
+    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
+        <tr bgcolor="#1B2E21">
+            <th colspan="6" align="left">
+                <font face="Courier New, monospace" size="2" color="#E5A93C">
+                    <b>TODAY'S FOCUS CHECKLIST</b>
+                </font>
+                &nbsp;&nbsp;
+                <font face="Verdana, sans-serif" size="1" color="#8FA885">
+                    (Immediate priority tasks for today)
+                </font>
+            </th>
+        </tr>
+        <tr bgcolor="#0E1710" align="center">
+            <th width="6%"><font face="Courier New, monospace" size="1" color="#E5A93C">DONE</font></th>
+            <th width="12%"><font face="Courier New, monospace" size="1" color="#E5A93C">CATEGORY</font></th>
+            <th width="50%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK TITLE</font></th>
+            <th width="12%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
+            <th width="10%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE TIME</font></th>
+            <th width="10%"><font face="Courier New, monospace" size="1" color="#E5A93C">ACTION</font></th>
+        </tr>
+
+        <!-- Empty State Row -->
+        <tr bgcolor="#16251A" align="center">
+            <td colspan="6" height="60">
+                <font face="Courier New, monospace" size="2" color="#8FA885">
+                    No operations scheduled yet. Add your first task above.
+                </font>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- ============================================================== -->
+    <!-- 5. CATEGORY-WISE TO-DO BOARDS (EMPTY READY STATES)             -->
+    <!-- ============================================================== -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="8">
+        <tr valign="top">
+            
+            <!-- LEFT COLUMN: STUDY & COLLEGE -->
+            <td width="50%">
+                
+                <!-- STUDY -->
+                <a name="study"></a>
+                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
+                    <tr bgcolor="#1B2E21">
+                        <th colspan="4" align="left">
+                            <font face="Courier New, monospace" size="2" color="#C4F84C">
+                                <b>STUDY</b>
+                            </font>
+                        </th>
+                    </tr>
+                    <tr bgcolor="#0E1710" align="center">
+                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
+                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
+                    </tr>
+                    <tr bgcolor="#16251A" align="center">
+                        <td colspan="4" height="45">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">No study tasks. Add an operation above.</font>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <!-- COLLEGE -->
+                <a name="college"></a>
+                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
+                    <tr bgcolor="#1B2E21">
+                        <th colspan="4" align="left">
+                            <font face="Courier New, monospace" size="2" color="#C4F84C">
+                                <b>COLLEGE</b>
+                            </font>
+                        </th>
+                    </tr>
+                    <tr bgcolor="#0E1710" align="center">
+                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
+                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
+                    </tr>
+                    <tr bgcolor="#16251A" align="center">
+                        <td colspan="4" height="45">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">No college tasks. Add an operation above.</font>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+
+            <!-- RIGHT COLUMN: PERSONAL, HEALTH & OTHERS -->
+            <td width="50%">
+                
+                <!-- PERSONAL -->
+                <a name="personal"></a>
+                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
+                    <tr bgcolor="#1B2E21">
+                        <th colspan="4" align="left">
+                            <font face="Courier New, monospace" size="2" color="#C4F84C">
+                                <b>PERSONAL</b>
+                            </font>
+                        </th>
+                    </tr>
+                    <tr bgcolor="#0E1710" align="center">
+                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
+                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
+                    </tr>
+                    <tr bgcolor="#16251A" align="center">
+                        <td colspan="4" height="45">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">No personal tasks. Add an operation above.</font>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <!-- HEALTH -->
+                <a name="health"></a>
+                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
+                    <tr bgcolor="#1B2E21">
+                        <th colspan="4" align="left">
+                            <font face="Courier New, monospace" size="2" color="#C4F84C">
+                                <b>HEALTH</b>
+                            </font>
+                        </th>
+                    </tr>
+                    <tr bgcolor="#0E1710" align="center">
+                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
+                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
+                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
+                    </tr>
+                    <tr bgcolor="#16251A" align="center">
+                        <td colspan="4" height="45">
+                            <font face="Courier New, monospace" size="1" color="#8FA885">No health tasks. Add an operation above.</font>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- ============================================================== -->
+    <!-- 6. COMPLETED ARCHIVE (EMPTY READY STATE)                       -->
+    <!-- ============================================================== -->
+    <a name="completed"></a>
+    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
+        <tr bgcolor="#1B2E21">
+            <th colspan="5" align="left">
+                <font face="Courier New, monospace" size="2" color="#C4F84C">
+                    <b>COMPLETED TASKS (0 EXECUTED)</b>
+                </font>
+            </th>
+        </tr>
+        <tr bgcolor="#0E1710" align="center">
+            <th width="8%"><font face="Courier New, monospace" size="1" color="#8FA885">CHECK</font></th>
+            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">CATEGORY</font></th>
+            <th width="56%" align="left"><font face="Courier New, monospace" size="1" color="#8FA885">TASK TITLE</font></th>
+            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">DATE</font></th>
+            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">STATUS</font></th>
+        </tr>
+
+        <!-- Empty State Row -->
+        <tr bgcolor="#16251A" align="center">
+            <td colspan="5" height="50">
+                <font face="Courier New, monospace" size="2" color="#8FA885">
+                    No completed operations yet. Finish a task to archive it here.
+                </font>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- ============================================================== -->
+    <!-- 7. FIELD NOTES & QUICK REMINDER SCRATCHPAD                     -->
+    <!-- ============================================================== -->
+    <a name="notes"></a>
+    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
+        <tr bgcolor="#1B2E21">
+            <th colspan="2" align="left">
+                <font face="Courier New, monospace" size="2" color="#E5A93C">
+                    <b>FIELD NOTES &bull; QUICK REMINDERS</b>
+                </font>
+            </th>
+        </tr>
+        <tr valign="top">
+            <td width="50%" bgcolor="#0E1710">
+                <form action="#" method="get">
+                    <font face="Courier New, monospace" size="1" color="#C4F84C">
+                        <b>WRITE A QUICK NOTE:</b>
+                    </font>
+                    <br><br>
+                    <textarea name="field_note" rows="5" cols="48" placeholder="Record your field notes here..."></textarea>
+                    <br><br>
+                    <input type="submit" value="SAVE NOTE">
+                    &nbsp;&nbsp;
+                    <font face="Courier New, monospace" size="1" color="#8FA885">[Saved locally]</font>
                 </form>
-            </section>
+            </td>
+            <td width="50%" bgcolor="#16251A">
+                <font face="Courier New, monospace" size="2" color="#E5A93C"><b>PINNED HEISENBERG DIRECTIVE:</b></font>
+                <hr color="#2D4D32" size="1">
+                <font face="Courier New, monospace" size="2" color="#C4F84C">
+                    &bull; <b>Rule:</b> "Stay out of my territory." Precision. Patience. Execution.<br><br>
+                    &bull; <b>Discipline:</b> "No more half-measures." Plan every operation before you execute.
+                </font>
+            </td>
+        </tr>
+    </table>
 
-            <!-- Active Operations Deck -->
-            <section class="operations-deck">
-                <div class="deck-header">
-                    <h3>ACTIVE MISSIONS</h3>
-                    <div class="deck-counter" id="deckCounter">Showing all operations</div>
-                </div>
-                <div class="task-list" id="taskList"></div>
-            </section>
-        </main>
+    <br>
 
-        <!-- RIGHT TACTICAL PANEL -->
-        <aside class="tactical-panel">
-            <!-- Calendar Widget -->
-            <div class="panel-widget">
-                <div class="widget-header">
-                    <h4>OCTOBER 2026</h4>
-                    <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--neon-green)">TACTICAL HUD</span>
-                </div>
-                <div class="calendar-grid">
-                    <div class="cal-day-name">S</div>
-                    <div class="cal-day-name">M</div>
-                    <div class="cal-day-name">T</div>
-                    <div class="cal-day-name">W</div>
-                    <div class="cal-day-name">T</div>
-                    <div class="cal-day-name">F</div>
-                    <div class="cal-day-name">S</div>
+    <!-- ============================================================== -->
+    <!-- 8. FOOTER                                                      -->
+    <!-- ============================================================== -->
+    <table width="100%" bgcolor="#070C08" border="1" bordercolor="#2D4D32" cellpadding="10" cellspacing="0">
+        <tr>
+            <td align="left">
+                <font face="Arial Black, Impact, sans-serif" size="2" color="#C4F84C">
+                    HEISENBERG'S TO-DO LIST &bull; ALBUQUERQUE, NM
+                </font>
+                <br>
+                <font face="Courier New, monospace" size="1" color="#8FA885">
+                    STUDY &bull; COLLEGE &bull; PERSONAL &bull; HEALTH &bull; OTHERS
+                </font>
+            </td>
+            <td align="right">
+                <font face="Courier New, monospace" size="2" color="#E5A93C">
+                    <b>"I AM THE ONE WHO KNOCKS."</b>
+                </font>
+                <br>
+                <a href="#top"><font face="Courier New, monospace" size="1" color="#C4F84C">[Back to Top]</font></a>
+            </td>
+        </tr>
+    </table>
 
-                    <div class="cal-day"></div>
-                    <div class="cal-day"></div>
-                    <div class="cal-day"></div>
-                    <div class="cal-day"></div>
-                    <div class="cal-day">1</div>
-                    <div class="cal-day">2</div>
-                    <div class="cal-day">3</div>
-                    <div class="cal-day">4</div>
-                    <div class="cal-day">5</div>
-                    <div class="cal-day">6</div>
-                    <div class="cal-day">7</div>
-                    <div class="cal-day">8</div>
-                    <div class="cal-day">9</div>
-                    <div class="cal-day">10</div>
-                    <div class="cal-day">11</div>
-                    <div class="cal-day">12</div>
-                    <div class="cal-day">13</div>
-                    <div class="cal-day">14</div>
-                    <div class="cal-day">15</div>
-                    <div class="cal-day">16</div>
-                    <div class="cal-day">17</div>
-                    <div class="cal-day">18</div>
-                    <div class="cal-day">19</div>
-                    <div class="cal-day">20</div>
-                    <div class="cal-day">21</div>
-                    <div class="cal-day">22</div>
-                    <div class="cal-day">23</div>
-                    <div class="cal-day">24</div>
-                    <div class="cal-day active">25</div>
-                    <div class="cal-day">26</div>
-                    <div class="cal-day">27</div>
-                    <div class="cal-day">28</div>
-                    <div class="cal-day">29</div>
-                    <div class="cal-day">30</div>
-                    <div class="cal-day">31</div>
-                </div>
-            </div>
+</td>
+</tr>
+</table>
+</center>
 
-            <!-- Encrypted Field Notes -->
-            <div class="panel-widget">
-                <div class="widget-header">
-                    <h4>ENCRYPTED FIELD NOTES</h4>
-                    <span style="font-size:0.7rem; color:var(--toxic-lime)">AUTOSAVED</span>
-                </div>
-                <textarea class="field-notes-area" id="fieldNotesInput" placeholder="Record classified notes or formula adjustments..."></textarea>
-                <div class="notes-meta">
-                    <span>STATUS: LOCALLY ENCRYPTED</span>
-                    <span id="notesCharCount">0 chars</span>
-                </div>
-            </div>
-
-            <!-- Emergency Voice Trigger -->
-            <div class="emergency-audio-btn" id="btnEmergencyVoice">
-                <h3>👑 SAY MY NAME</h3>
-                <p>AUDIO COMMAND TERMINAL</p>
-            </div>
-
-            <!-- Territory Card -->
-            <div class="territory-card">
-                <h5>☣️ STAY OUT OF MY TERRITORY</h5>
-                <p>"Precision. Patience. Absolute Execution. Chemistry is the study of change."</p>
-            </div>
-        </aside>
-    </div>
-
-    <!-- Dialogue Flash Modal -->
-    <div class="dialogue-modal" id="dialogueModal">
-        <h2 id="modalText">YOU'RE GODDAMN RIGHT.</h2>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
