@@ -1,4 +1,5 @@
 
+<style>
 /* ===== BREAKING BAD: HEISENBERG THEME ===== */
 
 :root {
@@ -12,63 +13,44 @@
   --bb-border: #354532;
 }
 
-/* Main page */
 body {
   background: var(--bb-bg) !important;
   color: var(--bb-text) !important;
 }
 
-/* Main headings */
 h1, h2, h3, h4 {
   color: var(--bb-green) !important;
 }
 
-/* Cards, panels and task sections */
-.card,
-.stat-card,
-.task-card,
-.calendar-card,
-.notes-card,
-.sidebar,
-header,
-section,
-aside {
+.card, .stat-card, .task-card,
+.calendar-card, .notes-card,
+.sidebar, header, section, aside {
   border-color: var(--bb-border) !important;
 }
 
-/* Common card backgrounds */
-.card,
-.stat-card,
-.task-card,
-.calendar-card,
-.notes-card {
+.card, .stat-card, .task-card,
+.calendar-card, .notes-card {
   background: var(--bb-panel) !important;
   color: var(--bb-text) !important;
   border-radius: 12px;
 }
 
-/* Sidebar */
 .sidebar {
   background: #131b14 !important;
   color: var(--bb-text) !important;
 }
 
-/* Inputs and dropdowns */
-input,
-select,
-textarea {
+input, select, textarea {
   background: var(--bb-panel-2) !important;
   color: var(--bb-text) !important;
   border: 1px solid var(--bb-border) !important;
   border-radius: 8px;
 }
 
-input::placeholder,
-textarea::placeholder {
+input::placeholder, textarea::placeholder {
   color: var(--bb-muted) !important;
 }
 
-/* Buttons */
 button {
   background: var(--bb-green) !important;
   color: #101510 !important;
@@ -81,65 +63,47 @@ button:hover {
   filter: brightness(1.12);
 }
 
-/* Links and highlights */
 a {
   color: var(--bb-green) !important;
 }
 
-/* Muted descriptions */
-p,
-small,
-label {
+p, small, label {
   color: var(--bb-muted);
 }
 
-/* Progress and accent elements */
-.progress,
-.progress-bar {
+.progress, .progress-bar {
   background-color: var(--bb-green) !important;
 }
 
-/* Calendar and separators */
 hr {
   border-color: var(--bb-border) !important;
 }
 
-/* Smooth visual style */
-.card,
-.stat-card,
-.task-card,
-.calendar-card,
-.notes-card,
-button,
-input,
-select,
-textarea {
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+.card, .stat-card, .task-card,
+.calendar-card, .notes-card,
+button, input, select, textarea {
+  transition: background-color 0.2s ease,
+              border-color 0.2s ease;
 }
 
-/* Heisenberg banner */
-.banner,
-.quote-banner,
-.hero-banner {
-  background: linear-gradient(120deg, #192519, #303a1d) !important;
+.banner, .quote-banner, .hero-banner {
+  background: linear-gradient(
+    120deg, #192519, #303a1d
+  ) !important;
   color: var(--bb-green) !important;
   border: 1px solid var(--bb-border);
 }
 
-/* Selected navigation */
-.active,
-.nav-link.active,
-.sidebar a.active {
+.active, .nav-link.active, .sidebar a.active {
   background: #354627 !important;
   color: var(--bb-green) !important;
 }
 
-/* Scrollbar */
 * {
   scrollbar-color: #52643b #101510;
 }
 
-/* Mobile layout safety */
 img {
   max-width: 100%;
 }
+</style>
