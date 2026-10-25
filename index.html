@@ -3,493 +3,1191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEISENBERG'S TO-DO LIST // DAILY TASK PLANNER</title>
-    <!-- Dark theme styling for input controls to eliminate white spots -->
+    <title>HEISENBERG // OPERATIONS &amp; TASK PLANNER</title>
     <style>
+        :root {
+            --bg-deep: #070c08;
+            --bg-panel: #0d1710;
+            --bg-surface: #122016;
+            --bg-hover: #192c1e;
+            --border-dim: #1e3624;
+            --border-glow: #2d5537;
+            --toxic-lime: #a3e635;
+            --toxic-glow: #b4f000;
+            --crystal-blue: #38bdf8;
+            --crystal-glow: #00f2fe;
+            --hazard-amber: #f59e0b;
+            --hazard-crimson: #f43f5e;
+            --text-muted: #7d9c82;
+            --text-light: #e2f1e4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 16px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Laboratory Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(45, 85, 55, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(45, 85, 55, 0.07) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Mouse Particles Canvas */
+        #chemistry-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            max-width: 960px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: linear-gradient(135deg, rgba(13, 23, 16, 0.95), rgba(7, 12, 8, 0.98));
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(163, 230, 53, 0.15);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .element-badge-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .element-badge {
+            width: 54px;
+            height: 56px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-top: 2px solid var(--toxic-lime);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4px 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .element-badge:hover {
+            transform: translateY(-2px);
+            border-color: var(--toxic-lime);
+            box-shadow: 0 0 14px rgba(163, 230, 53, 0.3);
+        }
+
+        .element-badge.blue {
+            border-top-color: var(--crystal-blue);
+        }
+
+        .element-badge.blue:hover {
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+        }
+
+        .element-num {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: var(--hazard-amber);
+            line-height: 1;
+        }
+
+        .element-sym {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-light);
+            line-height: 1;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .element-badge.blue .element-sym {
+            color: var(--crystal-blue);
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+        }
+
+        .element-badge:not(.blue) .element-sym {
+            color: var(--toxic-lime);
+            text-shadow: 0 0 8px rgba(163, 230, 53, 0.4);
+        }
+
+        .element-name {
+            font-size: 8px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .brand-meta h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 26px;
+            letter-spacing: 1.5px;
+            color: var(--toxic-lime);
+            text-shadow: 0 0 12px rgba(163, 230, 53, 0.3);
+            line-height: 1.1;
+        }
+
+        .brand-meta p {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-meta p span {
+            color: var(--hazard-amber);
+        }
+
+        /* HUD Progress Panel */
+        .hud-stats {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 250px;
+        }
+
+        .hud-counters {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .counter-item .c-label {
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .counter-item .c-val {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 20px;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        .counter-item.active .c-val { color: var(--hazard-amber); }
+        .counter-item.done .c-val { color: var(--toxic-lime); }
+        .counter-item.purity .c-val { color: var(--crystal-blue); text-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-deep);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid var(--border-dim);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--toxic-lime), var(--crystal-blue));
+            box-shadow: 0 0 8px rgba(163, 230, 53, 0.5);
+            transition: width 0.4s ease;
+        }
+
+        /* Quick-Add Dispatch Form */
+        .dispatch-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header-bar {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--hazard-amber);
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header-bar span {
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .task-form-grid {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        @media (max-width: 820px) {
+            .task-form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .task-form-grid .full-span {
+                grid-column: span 2;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         input[type="text"],
         input[type="date"],
-        input[type="time"],
         select,
         textarea {
-            background-color: #16251A;
-            color: #C4F84C;
-            border: 1px solid #2D4D32;
-            padding: 6px 10px;
-            font-family: 'Courier New', monospace;
+            background: var(--bg-surface);
+            color: var(--text-light);
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 9px 12px;
             font-size: 13px;
-            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: #4b6650;
         }
 
         input[type="text"]:focus,
         input[type="date"]:focus,
         select:focus,
         textarea:focus {
-            outline: 1px solid #C4F84C;
-            background-color: #1A2E20;
+            border-color: var(--toxic-lime);
+            box-shadow: 0 0 10px rgba(163, 230, 53, 0.25);
+            background: #15271a;
         }
 
-        input[type="submit"],
-        button {
-            background-color: #223B26;
-            color: #C4F84C;
-            border: 1px solid #3E6944;
-            padding: 7px 16px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover,
-        button:hover {
-            background-color: #2E4F34;
-            color: #FFFFFF;
-        }
-
-        /* Calendar picker icon color adjustment */
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(45deg);
             cursor: pointer;
         }
 
-        /* Clean navigation link styling */
-        a {
-            text-decoration: none;
+        .btn-dispatch {
+            background: linear-gradient(180deg, #1f3823, #152719);
+            color: var(--toxic-lime);
+            border: 1px solid var(--border-glow);
+            border-radius: 4px;
+            padding: 9px 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
-        a:hover {
-            text-decoration: underline;
+
+        .btn-dispatch:hover {
+            background: linear-gradient(180deg, #2b4f31, #1e3823);
+            border-color: var(--toxic-lime);
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(163, 230, 53, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-dispatch:active {
+            transform: translateY(0);
+        }
+
+        /* Filter Tabs */
+        .filter-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: thin;
+        }
+
+        .filter-pill {
+            background: var(--bg-panel);
+            color: var(--text-muted);
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 6px 14px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .filter-pill:hover {
+            color: var(--text-light);
+            border-color: var(--border-glow);
+            background: var(--bg-hover);
+        }
+
+        .filter-pill.active {
+            background: #17301c;
+            color: var(--toxic-lime);
+            border-color: var(--toxic-lime);
+            box-shadow: 0 0 10px rgba(163, 230, 53, 0.2);
+        }
+
+        .filter-count {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        /* Tasks Ledger Table */
+        .ledger-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .ledger-table thead th {
+            background: #0f1c13;
+            color: var(--hazard-amber);
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-glow);
+            text-transform: uppercase;
+        }
+
+        .ledger-table tbody tr {
+            border-bottom: 1px solid rgba(30, 54, 36, 0.5);
+            transition: background 0.15s ease;
+        }
+
+        .ledger-table tbody tr:hover {
+            background: var(--bg-hover);
+        }
+
+        .ledger-table tbody tr.completed-row {
+            opacity: 0.6;
+        }
+
+        .ledger-table td {
+            padding: 12px 14px;
+            vertical-align: middle;
+        }
+
+        /* Custom Checkbox */
+        .checkbox-container {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .checkbox-container:hover input ~ .checkmark {
+            border-color: var(--toxic-lime);
+            box-shadow: 0 0 6px rgba(163, 230, 53, 0.3);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background: var(--toxic-lime);
+            border-color: var(--toxic-lime);
+        }
+
+        .checkbox-container input:checked ~ .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid #070c08;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Badges */
+        .category-badge {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        .cat-study { background: rgba(56, 189, 248, 0.12); color: var(--crystal-blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .cat-college { background: rgba(245, 158, 11, 0.12); color: var(--hazard-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .cat-personal { background: rgba(163, 230, 53, 0.12); color: var(--toxic-lime); border: 1px solid rgba(163, 230, 53, 0.3); }
+        .cat-health { background: rgba(244, 63, 94, 0.12); color: var(--hazard-crimson); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .cat-others { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .priority-badge {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .prio-high { color: var(--hazard-crimson); }
+        .prio-medium { color: var(--hazard-amber); }
+        .prio-low { color: var(--text-muted); }
+
+        .task-title-text {
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.2s, text-decoration 0.2s;
+        }
+
+        .completed-row .task-title-text {
+            text-decoration: line-through;
+            color: #55725a;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #55725a;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            color: var(--hazard-crimson);
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .empty-state-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--border-glow);
+        }
+
+        /* Field Notes Panel */
+        .notes-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 720px) {
+            .notes-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .pinned-rules {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            border-left: 2px solid var(--border-glow);
+            padding-left: 14px;
+        }
+
+        .pinned-rules strong {
+            color: var(--toxic-lime);
+        }
+
+        /* Footer */
+        .footer-card {
+            border-top: 1px solid var(--border-dim);
+            padding-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .footer-quote {
+            color: var(--hazard-amber);
+            font-style: italic;
         }
     </style>
 </head>
-<body bgcolor="#0B120C" text="#A3E635" link="#C4F84C" vlink="#8DA358" alink="#FFFFFF">
-<a name="top"></a>
+<body>
 
-<!-- ============================================================== -->
-<!-- MASTER CENTERED CONTAINER (Compact width with side margins)    -->
-<!-- ============================================================== -->
-<center>
-<table width="940" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td>
+    <!-- Particle Overlay Canvas for Chemistry Sparks / Bubbles -->
+    <canvas id="chemistry-canvas"></canvas>
 
-    <!-- ============================================================== -->
-    <!-- 1. HEADER: BRAND & PROGRESS STATUS (CLEAN / READY FOR USE)     -->
-    <!-- ============================================================== -->
-    <table width="100%" bgcolor="#070C08" border="1" bordercolor="#2D4D32" cellpadding="10" cellspacing="0">
-        <tr>
-            <!-- Element 1: Br -->
-            <td width="60" align="center" valign="middle" bgcolor="#16251A">
-                <font face="Courier New, monospace" size="1" color="#E5A93C">35</font><br>
-                <font face="Impact, Arial Black, sans-serif" size="5" color="#C4F84C"><b>Br</b></font><br>
-                <font face="Arial, sans-serif" size="1" color="#8FA885">BROMINE</font>
-            </td>
+    <div class="app-container">
 
-            <!-- Element 2: Ba -->
-            <td width="60" align="center" valign="middle" bgcolor="#16251A">
-                <font face="Courier New, monospace" size="1" color="#E5A93C">56</font><br>
-                <font face="Impact, Arial Black, sans-serif" size="5" color="#C4F84C"><b>Ba</b></font><br>
-                <font face="Arial, sans-serif" size="1" color="#8FA885">BARIUM</font>
-            </td>
+        <!-- ========================================== -->
+        <!-- 1. HEISENBERG BRAND HEADER & PROGRESS HUD  -->
+        <!-- ========================================== -->
+        <header class="header-card">
+            <div class="header-brand">
+                <div class="element-badge-group">
+                    <!-- Br 35 -->
+                    <div class="element-badge">
+                        <span class="element-num">35</span>
+                        <span class="element-sym">Br</span>
+                        <span class="element-name">Bromine</span>
+                    </div>
+                    <!-- Ba 56 (Heisenberg Pure Blue) -->
+                    <div class="element-badge blue">
+                        <span class="element-num">56</span>
+                        <span class="element-sym">Ba</span>
+                        <span class="element-name">Barium</span>
+                    </div>
+                </div>
 
-            <!-- Title & Slogan -->
-            <td align="left" valign="middle" bgcolor="#0E1710">
-                <font face="Courier New, monospace" size="1" color="#E5A93C">
-                    <b>DAILY TASK MANAGER &bull; ALBUQUERQUE DISPATCH</b>
-                </font>
-                <br>
-                <font face="Arial Black, Impact, sans-serif" size="5" color="#C4F84C">
-                    HEISENBERG'S TO-DO LIST
-                </font>
-                <br>
-                <font face="Verdana, sans-serif" size="2" color="#8FA885">
-                    <i>"No more half-measures. Execute the plan."</i>
-                </font>
-            </td>
+                <div class="brand-meta">
+                    <h1>HEISENBERG</h1>
+                    <p>CHEMISTRY &bull; PRECISION &bull; <span>NO HALF-MEASURES</span></p>
+                </div>
+            </div>
 
-            <!-- Task Counter Box (Initial Zero State) -->
-            <td width="260" align="center" valign="middle" bgcolor="#121D15">
-                <table width="100%" border="1" bordercolor="#3E6944" cellpadding="4" cellspacing="0" bgcolor="#16251A">
-                    <tr bgcolor="#1B2E21" align="center">
-                        <th colspan="4">
-                            <font face="Courier New, monospace" size="1" color="#E5A93C">
-                                <b>TASK STATUS</b>
-                            </font>
-                        </th>
-                    </tr>
-                    <tr align="center">
-                        <td width="25%">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">TOTAL</font><br>
-                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0</b></font>
-                        </td>
-                        <td width="25%">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">PENDING</font><br>
-                            <font face="Impact, Arial Black, sans-serif" size="4" color="#E5A93C"><b>0</b></font>
-                        </td>
-                        <td width="25%">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">DONE</font><br>
-                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0</b></font>
-                        </td>
-                        <td width="25%">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">PROGRESS</font><br>
-                            <font face="Impact, Arial Black, sans-serif" size="4" color="#C4F84C"><b>0%</b></font>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" align="center" bgcolor="#0B120C">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">COMPLETION: </font>
-                            <progress value="0" max="100"></progress>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+            <!-- Real-Time Task Progress HUD -->
+            <div class="hud-stats">
+                <div class="hud-counters">
+                    <div class="counter-item">
+                        <div class="c-label">TOTAL</div>
+                        <div class="c-val" id="count-total">0</div>
+                    </div>
+                    <div class="counter-item active">
+                        <div class="c-label">PENDING</div>
+                        <div class="c-val" id="count-pending">0</div>
+                    </div>
+                    <div class="counter-item done">
+                        <div class="c-label">DONE</div>
+                        <div class="c-val" id="count-done">0</div>
+                    </div>
+                    <div class="counter-item purity">
+                        <div class="c-label">PURITY</div>
+                        <div class="c-val" id="count-purity">0%</div>
+                    </div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-bar"></div>
+                </div>
+            </div>
+        </header>
 
-    <br>
+        <!-- ========================================== -->
+        <!-- 2. QUICK ADD OPERATION DISPATCH DECK       -->
+        <!-- ========================================== -->
+        <section class="dispatch-card">
+            <div class="card-header-bar">
+                <div>DISPATCH DIRECTIVE // INITIALIZE NEW OPERATION</div>
+                <span>PRESS ENTER TO EXECUTE</span>
+            </div>
 
-    <!-- ============================================================== -->
-    <!-- 2. QUICK ADD TASK BAR (READY FOR USER INPUT)                   -->
-    <!-- ============================================================== -->
-    <form action="#" method="get">
-        <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
-            <tr bgcolor="#1B2E21">
-                <th colspan="5" align="left">
-                    <font face="Courier New, monospace" size="2" color="#E5A93C">
-                        <b>ADD NEW TASK</b>
-                    </font>
-                </th>
-            </tr>
-            <tr bgcolor="#16251A" align="center">
-                <!-- Task Description -->
-                <td width="38%" align="left">
-                    <font face="Courier New, monospace" size="1" color="#8FA885">TASK DESCRIPTION:</font><br>
-                    <input type="text" name="task_title" size="34" placeholder="Enter your next task..." required>
-                </td>
+            <form id="add-task-form" class="task-form-grid" onsubmit="handleAddTask(event)">
+                <div class="form-group full-span">
+                    <label for="task-title">Operation Title / Task Description</label>
+                    <input type="text" id="task-title" placeholder="Enter operation directive..." autocomplete="off" required>
+                </div>
 
-                <!-- Category -->
-                <td width="18%" align="left">
-                    <font face="Courier New, monospace" size="1" color="#8FA885">CATEGORY:</font><br>
-                    <select name="category" required>
+                <div class="form-group">
+                    <label for="task-category">Sector Category</label>
+                    <select id="task-category">
                         <option value="Study">Study</option>
                         <option value="College">College</option>
                         <option value="Personal">Personal</option>
                         <option value="Health">Health</option>
                         <option value="Others">Others</option>
                     </select>
-                </td>
+                </div>
 
-                <!-- Priority -->
-                <td width="16%" align="left">
-                    <font face="Courier New, monospace" size="1" color="#8FA885">PRIORITY:</font><br>
-                    <select name="priority">
+                <div class="form-group">
+                    <label for="task-priority">Priority</label>
+                    <select id="task-priority">
                         <option value="High">High</option>
                         <option value="Medium" selected>Medium</option>
                         <option value="Low">Low</option>
                     </select>
-                </td>
+                </div>
 
-                <!-- Due Date -->
-                <td width="16%" align="left">
-                    <font face="Courier New, monospace" size="1" color="#8FA885">DUE DATE:</font><br>
-                    <input type="date" name="due_date" required>
-                </td>
+                <div class="form-group">
+                    <label for="task-date">Deadline</label>
+                    <input type="date" id="task-date" required>
+                </div>
 
-                <!-- Submit Button -->
-                <td width="12%" align="center" valign="bottom">
-                    <input type="submit" value="+ ADD TO-DO">
-                </td>
-            </tr>
-        </table>
-    </form>
+                <button type="submit" class="btn-dispatch full-span">+ ADD OPERATION</button>
+            </form>
+        </section>
 
-    <br>
+        <!-- ========================================== -->
+        <!-- 3. SECTOR FILTER NAVIGATION TABS           -->
+        <!-- ========================================== -->
+        <nav class="filter-nav" id="filter-nav">
+            <button type="button" class="filter-pill active" onclick="setFilter('ALL')">
+                ALL <span class="filter-count" id="pill-all">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('TODAY')">
+                TODAY <span class="filter-count" id="pill-today">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('Study')">
+                STUDY <span class="filter-count" id="pill-study">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('College')">
+                COLLEGE <span class="filter-count" id="pill-college">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('Personal')">
+                PERSONAL <span class="filter-count" id="pill-personal">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('Health')">
+                HEALTH <span class="filter-count" id="pill-health">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('Others')">
+                OTHERS <span class="filter-count" id="pill-others">0</span>
+            </button>
+            <button type="button" class="filter-pill" onclick="setFilter('COMPLETED')">
+                COMPLETED <span class="filter-count" id="pill-completed">0</span>
+            </button>
+        </nav>
 
-    <!-- ============================================================== -->
-    <!-- 3. NAVIGATION TABS (INITIAL ZERO COUNTERS)                     -->
-    <!-- ============================================================== -->
-    <table width="100%" bgcolor="#0E1710" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
-        <tr align="center">
-            <td width="12%" bgcolor="#1B2E21">
-                <a href="#today"><font face="Courier New, monospace" size="2" color="#FFFFFF"><b>TODAY (0)</b></font></a>
-            </td>
-            <td width="12%" bgcolor="#16251A">
-                <a href="#study"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>STUDY (0)</b></font></a>
-            </td>
-            <td width="12%" bgcolor="#16251A">
-                <a href="#college"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>COLLEGE (0)</b></font></a>
-            </td>
-            <td width="12%" bgcolor="#16251A">
-                <a href="#personal"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>PERSONAL (0)</b></font></a>
-            </td>
-            <td width="12%" bgcolor="#16251A">
-                <a href="#health"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>HEALTH (0)</b></font></a>
-            </td>
-            <td width="12%" bgcolor="#16251A">
-                <a href="#others"><font face="Courier New, monospace" size="2" color="#C4F84C"><b>OTHERS (0)</b></font></a>
-            </td>
-            <td width="14%" bgcolor="#16251A">
-                <a href="#completed"><font face="Courier New, monospace" size="2" color="#8FA885"><b>COMPLETED (0)</b></font></a>
-            </td>
-            <td width="14%" bgcolor="#16251A">
-                <a href="#notes"><font face="Courier New, monospace" size="2" color="#E5A93C"><b>FIELD NOTES</b></font></a>
-            </td>
-        </tr>
-    </table>
-
-    <br>
-
-    <!-- ============================================================== -->
-    <!-- 4. TODAY'S FOCUS CHECKLIST (EMPTY READY STATE)                 -->
-    <!-- ============================================================== -->
-    <a name="today"></a>
-    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
-        <tr bgcolor="#1B2E21">
-            <th colspan="6" align="left">
-                <font face="Courier New, monospace" size="2" color="#E5A93C">
-                    <b>TODAY'S FOCUS CHECKLIST</b>
-                </font>
-                &nbsp;&nbsp;
-                <font face="Verdana, sans-serif" size="1" color="#8FA885">
-                    (Immediate priority tasks for today)
-                </font>
-            </th>
-        </tr>
-        <tr bgcolor="#0E1710" align="center">
-            <th width="6%"><font face="Courier New, monospace" size="1" color="#E5A93C">DONE</font></th>
-            <th width="12%"><font face="Courier New, monospace" size="1" color="#E5A93C">CATEGORY</font></th>
-            <th width="50%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK TITLE</font></th>
-            <th width="12%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
-            <th width="10%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE TIME</font></th>
-            <th width="10%"><font face="Courier New, monospace" size="1" color="#E5A93C">ACTION</font></th>
-        </tr>
-
-        <!-- Empty State Row -->
-        <tr bgcolor="#16251A" align="center">
-            <td colspan="6" height="60">
-                <font face="Courier New, monospace" size="2" color="#8FA885">
-                    No operations scheduled yet. Add your first task above.
-                </font>
-            </td>
-        </tr>
-    </table>
-
-    <br>
-
-    <!-- ============================================================== -->
-    <!-- 5. CATEGORY-WISE TO-DO BOARDS (EMPTY READY STATES)             -->
-    <!-- ============================================================== -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="8">
-        <tr valign="top">
-            
-            <!-- LEFT COLUMN: STUDY & COLLEGE -->
-            <td width="50%">
-                
-                <!-- STUDY -->
-                <a name="study"></a>
-                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
-                    <tr bgcolor="#1B2E21">
-                        <th colspan="4" align="left">
-                            <font face="Courier New, monospace" size="2" color="#C4F84C">
-                                <b>STUDY</b>
-                            </font>
-                        </th>
+        <!-- ========================================== -->
+        <!-- 4. ACTIVE OPERATIONS LEDGER (TASK LIST)    -->
+        <!-- ========================================== -->
+        <main class="ledger-card">
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th width="48" style="text-align: center;">EXEC</th>
+                        <th width="120">SECTOR</th>
+                        <th>OPERATION DIRECTIVE</th>
+                        <th width="100">PRIORITY</th>
+                        <th width="110">DEADLINE</th>
+                        <th width="48" style="text-align: center;">REVOKE</th>
                     </tr>
-                    <tr bgcolor="#0E1710" align="center">
-                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
-                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
-                    </tr>
-                    <tr bgcolor="#16251A" align="center">
-                        <td colspan="4" height="45">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">No study tasks. Add an operation above.</font>
+                </thead>
+                <tbody id="task-table-body">
+                    <!-- Populated dynamically via JavaScript -->
+                </tbody>
+            </table>
+        </main>
+
+        <!-- ========================================== -->
+        <!-- 5. FIELD NOTES & HEISENBERG PROTOCOLS      -->
+        <!-- ========================================== -->
+        <section class="notes-card">
+            <div>
+                <div class="card-header-bar">
+                    <div>ENCRYPTED FIELD NOTES // LOCAL STORAGE</div>
+                    <span id="notes-status">AUTO-SAVED</span>
+                </div>
+                <textarea id="field-notes" class="notes-textarea" placeholder="Record lab observations, drop coordinates, or chemical quantities..." oninput="saveFieldNotes()"></textarea>
+            </div>
+
+            <div class="pinned-rules">
+                <div class="card-header-bar">
+                    <div>TACTICAL RULES OF ENGAGEMENT</div>
+                </div>
+                <p><strong>RULE 01:</strong> "Stay out of my territory." Maintain strict focus on defined operations.</p>
+                <p style="margin-top: 8px;"><strong>RULE 02:</strong> "No more half-measures." Complete what you initiate to full 99.1% purity.</p>
+                <p style="margin-top: 8px;"><strong>RULE 03:</strong> Precision in stoichiometry is the difference between perfection and catastrophe.</p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 6. FOOTER                                  -->
+        <!-- ========================================== -->
+        <footer class="footer-card">
+            <div>HEISENBERG OPERATIONS REGISTRY &bull; ALBUQUERQUE, NM</div>
+            <div class="footer-quote">"Say my name. I am the one who knocks."</div>
+        </footer>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- JAVASCRIPT: TASK ENGINE & INTERACTIVE CHEMISTRY PARTICLES      -->
+    <!-- ============================================================== -->
+    <script>
+        // -------------------------------------------------------------
+        // A. DATA & STATE MANAGEMENT (LOCAL STORAGE)
+        // -------------------------------------------------------------
+        let tasks = [];
+        let currentFilter = 'ALL';
+
+        // Set default date picker to today's date
+        window.addEventListener('DOMContentLoaded', () => {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('task-date');
+            if (dateInput) dateInput.value = todayStr;
+
+            loadTasks();
+            loadFieldNotes();
+            initChemistryParticles();
+        });
+
+        function loadTasks() {
+            try {
+                const stored = localStorage.getItem('heisenberg_tasks');
+                tasks = stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                tasks = [];
+            }
+            renderTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('heisenberg_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            const titleInput = document.getElementById('task-title');
+            const categoryInput = document.getElementById('task-category');
+            const priorityInput = document.getElementById('task-priority');
+            const dateInput = document.getElementById('task-date');
+
+            const title = titleInput.value.trim();
+            if (!title) return;
+
+            const newTask = {
+                id: 'HB-' + Date.now().toString(36).toUpperCase(),
+                title: title,
+                category: categoryInput.value,
+                priority: priorityInput.value,
+                deadline: dateInput.value,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            tasks.unshift(newTask);
+            saveTasks();
+
+            // Clear input & trigger mini particle burst
+            titleInput.value = '';
+            titleInput.focus();
+            createChemicalBurst(window.innerWidth / 2, 200, 16);
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            // Update UI buttons
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                const text = btn.innerText.split(' ')[0];
+                if (text === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderTasks();
+        }
+
+        // -------------------------------------------------------------
+        // B. RENDERING & STATS
+        // -------------------------------------------------------------
+        function renderTasks() {
+            const tableBody = document.getElementById('task-table-body');
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            // Filter logic
+            let filtered = tasks;
+            if (currentFilter === 'TODAY') {
+                filtered = tasks.filter(t => t.deadline === todayStr && !t.completed);
+            } else if (currentFilter === 'COMPLETED') {
+                filtered = tasks.filter(t => t.completed);
+            } else if (currentFilter !== 'ALL') {
+                filtered = tasks.filter(t => t.category === currentFilter);
+            }
+
+            // Update Counters & HUD
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const pending = total - completed;
+            const purity = total > 0 ? Math.round((completed / total) * 99.1) : 0;
+
+            document.getElementById('count-total').innerText = total;
+            document.getElementById('count-pending').innerText = pending;
+            document.getElementById('count-done').innerText = completed;
+            document.getElementById('count-purity').innerText = purity + '%';
+            document.getElementById('progress-bar').style.width = (total > 0 ? (completed / total) * 100 : 0) + '%';
+
+            // Update Filter Badges
+            document.getElementById('pill-all').innerText = total;
+            document.getElementById('pill-today').innerText = tasks.filter(t => t.deadline === todayStr && !t.completed).length;
+            document.getElementById('pill-study').innerText = tasks.filter(t => t.category === 'Study').length;
+            document.getElementById('pill-college').innerText = tasks.filter(t => t.category === 'College').length;
+            document.getElementById('pill-personal').innerText = tasks.filter(t => t.category === 'Personal').length;
+            document.getElementById('pill-health').innerText = tasks.filter(t => t.category === 'Health').length;
+            document.getElementById('pill-others').innerText = tasks.filter(t => t.category === 'Others').length;
+            document.getElementById('pill-completed').innerText = completed;
+
+            // Render Rows
+            if (filtered.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">&#9883;</div>
+                                <div>NO ACTIVE OPERATIONS DETECTED IN THIS SECTOR</div>
+                                <div style="font-size: 11px; margin-top: 4px; color: #55725a;">Use the dispatch deck above to initialize your plan.</div>
+                            </div>
                         </td>
                     </tr>
-                </table>
+                `;
+                return;
+            }
 
-                <br>
+            tableBody.innerHTML = filtered.map(task => {
+                const catClass = 'cat-' + task.category.toLowerCase();
+                const prioClass = 'prio-' + task.priority.toLowerCase();
+                const completedClass = task.completed ? 'completed-row' : '';
 
-                <!-- COLLEGE -->
-                <a name="college"></a>
-                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
-                    <tr bgcolor="#1B2E21">
-                        <th colspan="4" align="left">
-                            <font face="Courier New, monospace" size="2" color="#C4F84C">
-                                <b>COLLEGE</b>
-                            </font>
-                        </th>
-                    </tr>
-                    <tr bgcolor="#0E1710" align="center">
-                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
-                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
-                    </tr>
-                    <tr bgcolor="#16251A" align="center">
-                        <td colspan="4" height="45">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">No college tasks. Add an operation above.</font>
+                return `
+                    <tr class="${completedClass}">
+                        <td align="center">
+                            <label class="checkbox-container">
+                                <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${task.id}')">
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span class="category-badge ${catClass}">[${task.category.toUpperCase()}]</span>
+                        </td>
+                        <td>
+                            <span class="task-title-text">${escapeHtml(task.title)}</span>
+                        </td>
+                        <td>
+                            <span class="priority-badge ${prioClass}">${task.priority.toUpperCase()}</span>
+                        </td>
+                        <td>
+                            <span style="font-family: 'Courier New', monospace; font-size: 11px; color: ${task.deadline === todayStr ? '#f59e0b' : '#7d9c82'};">
+                                ${task.deadline || 'NO DATE'}
+                            </span>
+                        </td>
+                        <td align="center">
+                            <button type="button" class="btn-delete" title="Revoke Operation" onclick="deleteTask('${task.id}')">&#10005;</button>
                         </td>
                     </tr>
-                </table>
+                `;
+            }).join('');
+        }
 
-            </td>
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
 
-            <!-- RIGHT COLUMN: PERSONAL, HEALTH & OTHERS -->
-            <td width="50%">
-                
-                <!-- PERSONAL -->
-                <a name="personal"></a>
-                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
-                    <tr bgcolor="#1B2E21">
-                        <th colspan="4" align="left">
-                            <font face="Courier New, monospace" size="2" color="#C4F84C">
-                                <b>PERSONAL</b>
-                            </font>
-                        </th>
-                    </tr>
-                    <tr bgcolor="#0E1710" align="center">
-                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
-                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
-                    </tr>
-                    <tr bgcolor="#16251A" align="center">
-                        <td colspan="4" height="45">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">No personal tasks. Add an operation above.</font>
-                        </td>
-                    </tr>
-                </table>
+        // -------------------------------------------------------------
+        // C. FIELD NOTES (AUTO-SAVE)
+        // -------------------------------------------------------------
+        function saveFieldNotes() {
+            const noteText = document.getElementById('field-notes').value;
+            localStorage.setItem('heisenberg_field_notes', noteText);
+            const status = document.getElementById('notes-status');
+            status.innerText = 'SAVING...';
+            setTimeout(() => {
+                status.innerText = 'SAVED';
+            }, 400);
+        }
 
-                <br>
+        function loadFieldNotes() {
+            const saved = localStorage.getItem('heisenberg_field_notes');
+            if (saved !== null) {
+                document.getElementById('field-notes').value = saved;
+            }
+        }
 
-                <!-- HEALTH -->
-                <a name="health"></a>
-                <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="6" cellspacing="0">
-                    <tr bgcolor="#1B2E21">
-                        <th colspan="4" align="left">
-                            <font face="Courier New, monospace" size="2" color="#C4F84C">
-                                <b>HEALTH</b>
-                            </font>
-                        </th>
-                    </tr>
-                    <tr bgcolor="#0E1710" align="center">
-                        <th width="8%"><font face="Courier New, monospace" size="1" color="#E5A93C">STATUS</font></th>
-                        <th width="62%" align="left"><font face="Courier New, monospace" size="1" color="#E5A93C">TASK</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">PRIORITY</font></th>
-                        <th width="15%"><font face="Courier New, monospace" size="1" color="#E5A93C">DUE</font></th>
-                    </tr>
-                    <tr bgcolor="#16251A" align="center">
-                        <td colspan="4" height="45">
-                            <font face="Courier New, monospace" size="1" color="#8FA885">No health tasks. Add an operation above.</font>
-                        </td>
-                    </tr>
-                </table>
+        // -------------------------------------------------------------
+        // D. MOUSE MOVE CHEMISTRY SPARKLES & BUBBLES ANIMATION
+        // -------------------------------------------------------------
+        function initChemistryParticles() {
+            const canvas = document.getElementById('chemistry-canvas');
+            const ctx = canvas.getContext('2d');
 
-            </td>
-        </tr>
-    </table>
+            let width = (canvas.width = window.innerWidth);
+            let height = (canvas.height = window.innerHeight);
 
-    <br>
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
 
-    <!-- ============================================================== -->
-    <!-- 6. COMPLETED ARCHIVE (EMPTY READY STATE)                       -->
-    <!-- ============================================================== -->
-    <a name="completed"></a>
-    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
-        <tr bgcolor="#1B2E21">
-            <th colspan="5" align="left">
-                <font face="Courier New, monospace" size="2" color="#C4F84C">
-                    <b>COMPLETED TASKS (0 EXECUTED)</b>
-                </font>
-            </th>
-        </tr>
-        <tr bgcolor="#0E1710" align="center">
-            <th width="8%"><font face="Courier New, monospace" size="1" color="#8FA885">CHECK</font></th>
-            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">CATEGORY</font></th>
-            <th width="56%" align="left"><font face="Courier New, monospace" size="1" color="#8FA885">TASK TITLE</font></th>
-            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">DATE</font></th>
-            <th width="12%"><font face="Courier New, monospace" size="1" color="#8FA885">STATUS</font></th>
-        </tr>
+            const particles = [];
+            let mouseX = -100;
+            let mouseY = -100;
+            let lastMouseX = -100;
+            let lastMouseY = -100;
 
-        <!-- Empty State Row -->
-        <tr bgcolor="#16251A" align="center">
-            <td colspan="5" height="50">
-                <font face="Courier New, monospace" size="2" color="#8FA885">
-                    No completed operations yet. Finish a task to archive it here.
-                </font>
-            </td>
-        </tr>
-    </table>
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
 
-    <br>
+                // Calculate mouse velocity
+                const dx = mouseX - lastMouseX;
+                const dy = mouseY - lastMouseY;
+                const speed = Math.sqrt(dx * dx + dy * dy);
 
-    <!-- ============================================================== -->
-    <!-- 7. FIELD NOTES & QUICK REMINDER SCRATCHPAD                     -->
-    <!-- ============================================================== -->
-    <a name="notes"></a>
-    <table width="100%" bgcolor="#121D15" border="1" bordercolor="#2D4D32" cellpadding="8" cellspacing="0">
-        <tr bgcolor="#1B2E21">
-            <th colspan="2" align="left">
-                <font face="Courier New, monospace" size="2" color="#E5A93C">
-                    <b>FIELD NOTES &bull; QUICK REMINDERS</b>
-                </font>
-            </th>
-        </tr>
-        <tr valign="top">
-            <td width="50%" bgcolor="#0E1710">
-                <form action="#" method="get">
-                    <font face="Courier New, monospace" size="1" color="#C4F84C">
-                        <b>WRITE A QUICK NOTE:</b>
-                    </font>
-                    <br><br>
-                    <textarea name="field_note" rows="5" cols="48" placeholder="Record your field notes here..."></textarea>
-                    <br><br>
-                    <input type="submit" value="SAVE NOTE">
-                    &nbsp;&nbsp;
-                    <font face="Courier New, monospace" size="1" color="#8FA885">[Saved locally]</font>
-                </form>
-            </td>
-            <td width="50%" bgcolor="#16251A">
-                <font face="Courier New, monospace" size="2" color="#E5A93C"><b>PINNED HEISENBERG DIRECTIVE:</b></font>
-                <hr color="#2D4D32" size="1">
-                <font face="Courier New, monospace" size="2" color="#C4F84C">
-                    &bull; <b>Rule:</b> "Stay out of my territory." Precision. Patience. Execution.<br><br>
-                    &bull; <b>Discipline:</b> "No more half-measures." Plan every operation before you execute.
-                </font>
-            </td>
-        </tr>
-    </table>
+                // Spawn 1 to 3 particles per move
+                const count = Math.min(Math.floor(speed / 4) + 1, 4);
+                for (let i = 0; i < count; i++) {
+                    spawnChemistryParticle(mouseX, mouseY);
+                }
 
-    <br>
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+            });
 
-    <!-- ============================================================== -->
-    <!-- 8. FOOTER                                                      -->
-    <!-- ============================================================== -->
-    <table width="100%" bgcolor="#070C08" border="1" bordercolor="#2D4D32" cellpadding="10" cellspacing="0">
-        <tr>
-            <td align="left">
-                <font face="Arial Black, Impact, sans-serif" size="2" color="#C4F84C">
-                    HEISENBERG'S TO-DO LIST &bull; ALBUQUERQUE, NM
-                </font>
-                <br>
-                <font face="Courier New, monospace" size="1" color="#8FA885">
-                    STUDY &bull; COLLEGE &bull; PERSONAL &bull; HEALTH &bull; OTHERS
-                </font>
-            </td>
-            <td align="right">
-                <font face="Courier New, monospace" size="2" color="#E5A93C">
-                    <b>"I AM THE ONE WHO KNOCKS."</b>
-                </font>
-                <br>
-                <a href="#top"><font face="Courier New, monospace" size="1" color="#C4F84C">[Back to Top]</font></a>
-            </td>
-        </tr>
-    </table>
+            window.addEventListener('click', (e) => {
+                createChemicalBurst(e.clientX, e.clientY, 14);
+            });
 
-</td>
-</tr>
-</table>
-</center>
+            function spawnChemistryParticle(x, y) {
+                // Alternating chemistry effects: Micro-bubble, Crystal Sparkle, or Vapor dot
+                const types = ['bubble', 'crystal', 'fume'];
+                const type = types[Math.floor(Math.random() * types.length)];
 
+                // Color palette: Heisenberg 99.1% pure cyan, radioactive lime, hazard amber
+                const colors = [
+                    { r: 56, g: 189, b: 248 },  // Crystal blue
+                    { r: 0, g: 242, b: 254 },   // Neon cyan
+                    { r: 163, g: 230, b: 53 },  // Toxic lime
+                    { r: 245, g: 158, b: 11 }   // Hazard amber
+                ];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                particles.push({
+                    x: x + (Math.random() * 12 - 6),
+                    y: y + (Math.random() * 12 - 6),
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: -Math.random() * 1.8 - 0.5, // gentle buoyant rise
+                    size: type === 'bubble' ? Math.random() * 4 + 3 : Math.random() * 3 + 2,
+                    alpha: 1,
+                    decay: Math.random() * 0.025 + 0.015,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.1,
+                    type: type,
+                    color: color,
+                    wobble: Math.random() * 5
+                });
+            }
+
+            window.createChemicalBurst = function(x, y, amount) {
+                for (let i = 0; i < amount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 4 + 1;
+                    const colors = [
+                        { r: 56, g: 189, b: 248 },
+                        { r: 0, g: 242, b: 254 },
+                        { r: 163, g: 230, b: 53 }
+                    ];
+                    particles.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 1,
+                        size: Math.random() * 4 + 2,
+                        alpha: 1,
+                        decay: Math.random() * 0.03 + 0.02,
+                        rotation: Math.random() * Math.PI,
+                        rotSpeed: 0.1,
+                        type: 'crystal',
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        wobble: 0
+                    });
+                }
+            };
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+
+                    p.x += p.vx + Math.sin(p.y * 0.05 + p.wobble) * 0.4;
+                    p.y += p.vy;
+                    p.alpha -= p.decay;
+                    p.rotation += p.rotSpeed;
+
+                    if (p.alpha <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation);
+
+                    const rgb = `${p.color.r}, ${p.color.g}, ${p.color.b}`;
+
+                    if (p.type === 'crystal') {
+                        // 4-pointed crystal spark (Breaking Bad blue meth crystal shard)
+                        ctx.fillStyle = `rgba(${rgb}, ${p.alpha})`;
+                        ctx.shadowColor = `rgba(${rgb}, 0.8)`;
+                        ctx.shadowBlur = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(0, -p.size * 1.5);
+                        ctx.lineTo(p.size * 0.6, 0);
+                        ctx.moveTo(0, p.size * 1.5);
+                        ctx.lineTo(-p.size * 0.6, 0);
+                        ctx.arc(0, 0, p.size * 0.4, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (p.type === 'bubble') {
+                        // Effervescent chemical reaction micro-bubble
+                        ctx.strokeStyle = `rgba(${rgb}, ${p.alpha * 0.8})`;
+                        ctx.lineWidth = 1;
+                        ctx.fillStyle = `rgba(${rgb}, ${p.alpha * 0.2})`;
+                        ctx.shadowColor = `rgba(${rgb}, 0.5)`;
+                        ctx.shadowBlur = 4;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.fill();
+
+                        // Tiny specular glint on top-left of bubble
+                        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.7})`;
+                        ctx.beginPath();
+                        ctx.arc(-p.size * 0.3, -p.size * 0.3, p.size * 0.25, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        // Soft chemical fume vapor
+                        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 1.5);
+                        gradient.addColorStop(0, `rgba(${rgb}, ${p.alpha * 0.5})`);
+                        gradient.addColorStop(1, `rgba(${rgb}, 0)`);
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size * 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+    </script>
 </body>
 </html>
